@@ -17,7 +17,17 @@ const create_user_schema = {
     },
 };
 
+const login_schema = {
+    type: 'object',
+    required: ['username', 'password'],
+    properties: {
+        username: {type: 'string'},
+        password: {type: 'string'},
+    },
+};
+
 module.exports = {
     validate,
     create_user_schema,
+    login_schema,
 };

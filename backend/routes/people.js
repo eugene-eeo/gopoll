@@ -2,6 +2,7 @@ const router = require('express').Router();
 const User = require('../models/user');
 const users = require('../db').users;
 const schema = require('../schema');
+const { error } = require('../utils');
 
 
 router.get('/', (req, res) => {
@@ -12,9 +13,7 @@ router.get('/', (req, res) => {
 router.post('/', schema.validate({body: schema.create_user_schema}), (req, res) => {
     // Check if username is taken
     if (users.hasOwnProperty(req.body.username)) {
-        res.status(400)
-           .json({error: "username is taken"});
-        return;
+        return error(res, "username is taken");
     }
     const user = new User({
         username: req.body.username,
