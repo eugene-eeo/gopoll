@@ -9,6 +9,9 @@ const users = {
     }),
 };
 
+const polls = {};
+
 module.exports = {
     users,
+    polls,
 };

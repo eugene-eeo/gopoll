@@ -11,5 +11,6 @@ app.use(cookieParser('secret'));
 // routes
 app.use('/people', require('./routes/people'));
 app.use('/auth',   require('./routes/auth'));
+app.use('/poll',   require('./routes/polls'));
 
 app.listen(3000, () => {});

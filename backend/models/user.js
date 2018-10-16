@@ -6,7 +6,7 @@ const User = function({username, forename, surname, password}) {
 };
 
 User.prototype = {
-    toJSON: function() {
+    to_json: function() {
         return {
             username: this.username,
             forename: this.forename,

@@ -6,7 +6,7 @@ const { error } = require('../utils');
 
 
 router.get('/', (req, res) => {
-    res.json(Object.values(users).map(x => x.toJSON()));
+    res.json(Object.values(users).map(x => x.to_json()));
 });
 
 
@@ -22,7 +22,7 @@ router.post('/', schema.validate({body: schema.create_user_schema}), (req, res) 
         password: req.body.password,
     });
     users[user.username] = user;
-    res.json(user);
+    res.json(user.to_json());
 });
 
 
@@ -32,7 +32,7 @@ router.get('/:username', (req, res) => {
         res.status(400).end();
         return;
     }
-    res.json(users[username].toJSON());
+    res.json(users[username].to_json());
 });
 
 

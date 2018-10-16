@@ -8,4 +8,3 @@ assignment for durham programming paradigms module
    - [x] `/auth`
    - [ ] `/poll`
    - [ ] `/comment`
-   - [ ] `/notification` (maybe)
