@@ -12,7 +12,7 @@ router.post('/', needs_auth,
         // workaround because [].reduce => typeerror
         const keys = Object.keys(polls);
         const id = keys.length > 0
-            ? 1 + keys.reduce((a, b) => Math.max(a, b))
+            ? 1 + +keys.reduce((a, b) => Math.max(+a, +b))
             : 1;
         polls[id] = new Poll({
             id,
@@ -116,9 +116,12 @@ router.delete('/:id/option/:opt',
             return;
         }
         const i = option.users.indexOf(user);
-        if (i !== -1) {
-            option.users.splice(i, 1);
+        if (i === -1) {
+            res.status(404);
+            res.end();
+            return;
         }
+        option.users.splice(i, 1);
         res.json({});
     });
 
