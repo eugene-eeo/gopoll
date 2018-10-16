@@ -6,5 +6,5 @@ assignment for durham programming paradigms module
  - [ ] backend
    - [x] `/people`
    - [x] `/auth`
-   - [ ] `/poll`
+   - [x] `/poll`
    - [ ] `/comment`
