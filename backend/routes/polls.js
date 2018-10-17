@@ -21,7 +21,7 @@ router.post('/', needs_auth,
             description: req.body.description,
             multi:       req.body.multi,
         });
-        res.json(polls[id].to_json_with_votes());
+        res.json(polls[id].to_json_with_details());
     });
 
 
@@ -32,7 +32,7 @@ router.get('/:id', (req, res) => {
         res.end();
         return;
     }
-    res.json(poll.to_json_with_votes());
+    res.json(poll.to_json_with_details());
 });
 
 
@@ -69,7 +69,7 @@ router.put('/:id',
                 : [];
             return opt;
         });
-        res.json(poll.to_json_with_votes());
+        res.json(poll.to_json_with_details());
     });
 
 
@@ -77,6 +77,10 @@ router.delete('/:id',
     needs_auth,
     check_poll_same_user,
     (req, res) => {
+        if (!polls[req.params.id]) {
+            res.status(404).end();
+            return;
+        }
         delete polls[req.params.id];
         res.json({});
     });

@@ -101,6 +101,31 @@ assert r.json()['votes'][0]['name'] == 'two'
 assert r.json()['votes'][1]['name'] == 'uno'
 assert r.json()['votes'][2]['name'] == 'three'
 
+# make comments
+r = s.post(u + '/comment/', json={'text': 'abc', 'poll_id': 1})
+assert r.status_code == 200
+id = r.json()['id']
+
+assert s.put(u + f'/comment/{id}', json={'text': 'abc!'}).status_code == 200
+assert s.post(u + '/comment/', json={'text': 'def', 'reply_to': id}).status_code == 200
+assert s.post(u + '/comment/', json={'text': 'ghi', 'reply_to': id}).status_code == 200
+
+poll = s.get(u + '/poll/1').json()
+assert len(poll['comments']) == 1
+assert poll['comments'][0]['text'] == 'abc!'
+assert len(poll['comments'][0]['comments']) == 2
+assert poll['comments'][0]['comments'][0]['text'] == 'def'
+assert poll['comments'][0]['comments'][1]['text'] == 'ghi'
+
+# delete comment
+assert s.delete(u + f'/comment/{id}').status_code == 200
+assert s.get(u + '/poll/1').json()['comments'] == []
+
+# delete poll
+assert s.delete(u + '/poll/3').status_code == 404
+assert s.delete(u + '/poll/1').status_code == 200
+assert s.get(u + '/poll/1').status_code == 404
+
 # POST /auth/logout
 r = s.post(u + '/auth/logout')
 assert r.status_code == 200

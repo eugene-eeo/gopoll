@@ -1,5 +1,5 @@
 const { Validator } = require('express-json-validator-middleware');
-const validator = new Validator({allErrors: true});
+const validator = new Validator();
 const validate = validator.validate;
 
 // users
@@ -11,9 +11,9 @@ const create_user_schema = {
             type: 'string',
             pattern: '[a-zA-Z][A-Za-z0-9]+'
         },
-        password: {type: 'string'},
-        forename: {type: 'string'},
-        surname:  {type: 'string'},
+        password: {type: 'string', minLength: 1},
+        forename: {type: 'string', minLength: 1},
+        surname:  {type: 'string', minLength: 1},
     },
 };
 
@@ -31,12 +31,9 @@ const create_poll_schema = {
     type: 'object',
     required: ['name', 'description', 'multi'],
     properties: {
-        name: {
-            type: 'string',
-            pattern: '[A-Za-z0-9][A-Za-z0-9 ]+'
-        },
-        description: {type: 'string'},
-        multi: {type: 'boolean'},
+        name:        {type: 'string', minLength: 1},
+        description: {type: 'string', minLength: 1},
+        multi:       {type: 'boolean'},
     },
 };
 
@@ -46,7 +43,7 @@ const update_poll_schema = {
     properties: {
         name: {
             type: 'string',
-            pattern: '[A-Za-z0-9][A-Za-z0-9 ]+'
+            minLength: 1,
         },
         description: {type: 'string'},
         options: {
@@ -56,10 +53,29 @@ const update_poll_schema = {
                 required: ['id', 'name'],
                 properties: {
                     id: {type: 'integer'},
-                    name: {type: 'string'},
+                    name: {type: 'string', minLength: 1},
                 },
             }
         }
+    },
+};
+
+// comments
+const create_comment_schema = {
+    type: 'object',
+    required: ['text'],
+    properties: {
+        text: {type: 'string', minLength: 1},
+        poll_id: {type: 'integer'},
+        reply_to: {type: 'string'},
+    },
+};
+
+const update_comment_schema = {
+    type: 'object',
+    required: ['text'],
+    properties: {
+        text: {type: 'string', minLength: 1},
     },
 };
 
@@ -69,4 +85,6 @@ module.exports = {
     login_schema,
     create_poll_schema,
     update_poll_schema,
+    create_comment_schema,
+    update_comment_schema,
 };

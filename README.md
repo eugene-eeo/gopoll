@@ -7,4 +7,4 @@ assignment for durham programming paradigms module
    - [x] `/people`
    - [x] `/auth`
    - [x] `/poll`
-   - [ ] `/comment`
+   - [x] `/comment`

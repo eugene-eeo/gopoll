@@ -10,8 +10,10 @@ const users = {
 };
 
 const polls = {};
+const comments = {};
 
 module.exports = {
     users,
     polls,
+    comments,
 };

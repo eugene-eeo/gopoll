@@ -11,7 +11,10 @@
   "license": "ISC",
   "dependencies": {
     "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
     "express": "^4.16.4",
-    "morgan": "^1.9.1"
+    "express-json-validator-middleware": "^1.2.3",
+    "morgan": "^1.9.1",
+    "uuid": "^3.3.2"
   }
 }

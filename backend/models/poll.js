@@ -5,6 +5,7 @@ function Poll({id, name, description, multi, user}) {
     this.multi = multi;  // whether multiple options can be selected
     this.user = user;
     this.options = [];
+    this.comments = [];
 }
 
 Poll.prototype = {
@@ -18,13 +19,14 @@ Poll.prototype = {
         };
     },
 
-    to_json_with_votes: function() {
+    to_json_with_details: function() {
         const json = this.to_json();
         json.votes = this.options.map(opt => ({
             id: opt.id,
             name: opt.name,
             num:  opt.users.length,
         }));
+        json.comments = this.comments.map(c => c.to_json());
         return json;
     },
 
