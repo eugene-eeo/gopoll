@@ -2,7 +2,7 @@ const router = require('express').Router();
 const User = require('../models/user');
 const users = require('../db').users;
 const schema = require('../schema');
-const { error } = require('../utils');
+const { polls_created_by_user, error } = require('../utils');
 
 
 router.get('/', (req, res) => {
@@ -27,12 +27,15 @@ router.post('/', schema.validate({body: schema.create_user_schema}), (req, res) 
 
 
 router.get('/:username', (req, res) => {
-    const username = req.params.username;
-    if (!users.hasOwnProperty(username)) {
+    const user = users[req.params.username];
+    if (!user) {
         res.status(400).end();
         return;
     }
-    res.json(users[username].to_json());
+    res.json({
+        polls_created: polls_created_by_user(user),
+        ...user.to_json()
+    });
 });
 
 

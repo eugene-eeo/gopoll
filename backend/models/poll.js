@@ -19,12 +19,13 @@ Poll.prototype = {
         };
     },
 
-    to_json_with_details: function() {
+    to_json_with_details: function(user) {
         const json = this.to_json();
         json.votes = this.options.map(opt => ({
-            id: opt.id,
-            name: opt.name,
-            num:  opt.users.length,
+            id:    opt.id,
+            name:  opt.name,
+            num:   opt.users.length,
+            voted: opt.users.indexOf(user) !== -1,
         }));
         json.comments = this.comments.map(c => c.to_json());
         return json;

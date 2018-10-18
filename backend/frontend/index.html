@@ -1,0 +1,88 @@
+<html>
+<head>
+  <title>gopoll</title>
+  <script src='/js/jquery.js'></script>
+  <script src='/js/jquery.hashroute.js'></script>
+  <script src='/js/mustache.js'></script>
+  <script src='/js/js-cookie.js'></script>
+  <script src='/js/ui.js'></script>
+  <style>
+body {
+  font-family: sans-serif;
+  font-size: 16px;
+  max-width: 50em;
+  margin: 1em auto;
+}
+
+nav a { padding: 0em 1em; }
+
+.voted { color: green; font-weight: bold }
+
+.user { font-size: 1.5em; }
+.user .name { display: block; }
+
+.poll-tiny { border: 1px solid #000; padding: 0.5em; margin: 0.2em; }
+.poll-tiny .name { font-weight: bold; display: block; }
+.poll-tiny .description { colour: #333; display: block; }
+
+.poll-title { margin-bottom: 0; }
+  </style>
+</head>
+<body>
+  <h1>gopoll</h1>
+  <nav></nav>
+  <hr/>
+  <div id='content'>
+  </div>
+  <script id="poll-template" type="x-tmpl-mustache">
+<h2 class='poll-title'>{{ name }}</h2>
+<span class='meta'>Created by {{ user.forename }} {{ user.surname }} (<a href='#/user/{{user.username}}'>@{{ user.username }}</a>)</span>
+<p>{{ description }}</p>
+{{#votes}}
+<div class='vote'>
+  <span class='name {{#voted}}voted{{/voted}}'>{{ name }} ({{ num }})</span>
+</div>
+{{/votes}}
+  </script>
+  <script id="user-template" type="x-tmpl-mustache">
+<div class='user'>
+  <span class='name'>{{ forename }} {{ surname }} (@{{username}})</span>
+</div>
+<h3>Polls Created</h3>
+{{#polls_created}}
+  <div class='poll-tiny'>
+    <span class='name'><a href='#/poll/{{ id }}'>{{ name }}</a></span>
+    <span class='description'>{{ description }}</span>
+  </div>
+{{/polls_created}}
+  </script>
+  <script id="people-template" type="x-tmpl-mustache">
+<h2>Users</h2>
+<ul>
+{{#people}}
+  <li>{{ forename }} {{ surname }} (<a href='#/user/{{ username }}'>@{{ username }}</a>)</li>
+{{/people}}
+</ul>
+  </script>
+  <script id="dashboard-template" type="x-tmpl-mustache">
+<div class='user'>
+  <span class='name'>{{ forename }} {{ surname }} (@{{username}})</span>
+</div>
+
+<h3>My Polls</h3>
+{{#polls_created}}
+  <div class='poll-tiny'>
+    <span class='name'><a href='#/poll/{{ id }}'>{{ name }}</a></span>
+    <span class='description'>{{ description }}</span>
+  </div>
+{{/polls_created}}
+<h3>Participated Polls</h3>
+{{#polls_participated}}
+  <div class='poll-tiny'>
+    <span class='name'><a href='#/poll/{{ id }}'>{{ name }}</a></span>
+    <span class='description'>{{ description }}</span>
+  </div>
+{{/polls_participated}}
+  </script>
+</body>
+</html>

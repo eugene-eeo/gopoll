@@ -11,9 +11,10 @@ app.use(express.json());
 app.use(cookieParser('secret'));
 
 // routes
-app.use('/people',  require('./routes/people'));
-app.use('/auth',    require('./routes/auth'));
-app.use('/poll',    require('./routes/polls'));
-app.use('/comment', require('./routes/comments'));
+app.use('/', express.static('frontend'));
+app.use('/api/people',  require('./routes/people'));
+app.use('/api/auth',    require('./routes/auth'));
+app.use('/api/poll',    require('./routes/polls'));
+app.use('/api/comment', require('./routes/comments'));
 
 app.listen(3000, () => {});

@@ -21,18 +21,19 @@ router.post('/', needs_auth,
             description: req.body.description,
             multi:       req.body.multi,
         });
-        res.json(polls[id].to_json_with_details());
+        res.json(polls[id].to_json_with_details(user));
     });
 
 
 router.get('/:id', (req, res) => {
+    const user = get_user(req);
     const poll = polls[req.params.id];
     if (poll === undefined) {
         res.status(404);
         res.end();
         return;
     }
-    res.json(poll.to_json_with_details());
+    res.json(poll.to_json_with_details(user));
 });
 
 
@@ -69,7 +70,7 @@ router.put('/:id',
                 : [];
             return opt;
         });
-        res.json(poll.to_json_with_details());
+        res.json(poll.to_json_with_details(user));
     });
 
 
