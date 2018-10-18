@@ -8,3 +8,5 @@ assignment for durham programming paradigms module
    - [x] `/auth`
    - [x] `/poll`
    - [x] `/comment`
+   - [ ] `/search`
+   - [ ] use token instead of login=username for cookie
