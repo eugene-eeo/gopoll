@@ -1,4 +1,4 @@
-const { users, polls } = require('./db');
+const { tokens, polls } = require('./db');
 
 
 function error(res, message) {
@@ -7,17 +7,16 @@ function error(res, message) {
 
 
 function get_user(req) {
-    return users[req.signedCookies.login];
+    return tokens[req.signedCookies.token];
 }
 
 
 function needs_auth(req, res, next) {
-    if (req.signedCookies.login !== undefined &&
-        users.hasOwnProperty(req.signedCookies.login)) {
+    if (tokens.hasOwnProperty(req.signedCookies.token)) {
         next();
         return;
     }
-    res.clearCookie('login');
+    res.clearCookie('token');
     error(res, "login required");
 }
 

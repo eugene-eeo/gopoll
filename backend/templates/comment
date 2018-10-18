@@ -1,0 +1,10 @@
+<div class='comment'>
+  <div class='comment-user'><a href='#/user/{{ user.username }}'>{{ user.forename }} {{ user.surname }}</a>:</div>
+  <div class='comment-text'>{{ text }}</div>
+  <div class='comment-panel' data-comment-id='{{ id }}'>
+    {{#repliable}}<button class='comment-reply'>reply</button>{{/repliable}}
+    {{#deletable}}<button class='comment-delete'>delete</button>{{/deletable}}
+  </div>
+  <div class='comment-children'>
+  </div>
+</div>

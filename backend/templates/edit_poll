@@ -1,0 +1,16 @@
+<div id='edit-poll'>
+  <h3>Basics</h3>
+  Name: <input name='name' value='{{ name }}'><br/>
+  Description:
+  <textarea name='description'>{{ description }}</textarea>
+
+  <h3>Options</h3>
+  <div id='edit-poll-options'></div>
+  <div id='add-poll-options'>
+    <input name='add-poll-option'></input><button id='add-option'>add</button>
+  </div>
+
+  <hr/>
+  <button id='save'>save</button>
+  <a href='#/poll/{{ id }}'><button>cancel</button></a>
+</div>

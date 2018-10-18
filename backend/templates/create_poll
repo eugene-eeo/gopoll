@@ -1,0 +1,8 @@
+<form id='create-poll'>
+  <div id='errors'></div>
+  Name: <input type='text' name='name'/><br/>
+  Description:<br/>
+  <textarea name='description'/><br/>
+  <input type='checkbox' name='multi'> Multi-option
+  <button id='create'>create</button>
+</form>

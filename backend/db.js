@@ -7,13 +7,27 @@ const users = {
         surname:  "Derbyshire",
         password: "doctor",
     }),
+    "shufay": new User({
+        username: "shufay",
+        forename: "Shu Fay",
+        surname:  "Ung",
+        password: "abc",
+    }),
+    "eeojun": new User({
+        username: "eeojun",
+        forename: "Jun",
+        surname:  "Eeo",
+        password: "abc",
+    }),
 };
 
+const tokens = {};
 const polls = {};
 const comments = {};
 
 module.exports = {
     users,
+    tokens,
     polls,
     comments,
 };

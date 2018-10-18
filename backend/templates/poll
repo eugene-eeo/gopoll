@@ -1,0 +1,41 @@
+<div id='poll'>
+{{#editable}}
+<div id='poll-panel'>
+  <a href='#/edit-poll/{{ id }}'>edit</a>
+  <a href='#/delete-poll/{{ id }}'>delete</a>
+</div>
+{{/editable}}
+
+<h2 class='poll-title'>{{ name }}</h2>
+<span class='meta'>{{ user.forename }} {{ user.surname }} (<a href='#/user/{{user.username}}'>@{{ user.username }}</a>)</span>
+<p>{{ description }}</p>
+
+<hr/>
+
+<div id='votes'>
+{{#votes}}
+  <div class='vote'>
+    <span class='name {{#voted}}voted{{/voted}}'>{{ name }} ({{ num }})</span>
+    {{^voted}}
+      <a class='add-vote' data-id='{{ id }}'>vote</a>
+    {{/voted}}
+    {{#voted}}
+      <a class='add-unvote' data-id='{{ id }}'>unvote</a>
+    {{/voted}}
+  </div>
+{{/votes}}
+{{^votes}}
+  <span class='gray'>there seems to be no options</span>
+{{/votes}}
+</div>
+<div class='clearfix'/>
+
+<hr/>
+
+<form id='comment-box'>
+    <textarea name='text'/>
+    <button class='comment-box-submit'>Reply</button>
+</form>
+
+<div id='comments'></div>
+</div>

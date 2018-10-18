@@ -1,0 +1,11 @@
+<div class='user'>
+  <span class='name'>{{ forename }} {{ surname }} (@{{username}})</span>
+</div>
+
+<h3>Polls Created</h3>
+{{#polls_created}}
+  <div class='poll-tiny'>
+    <span class='name'><a href='#/poll/{{ id }}'>{{ name }}</a></span>
+    <span class='description'>{{ description }}</span>
+  </div>
+{{/polls_created}}

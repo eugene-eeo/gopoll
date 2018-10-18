@@ -1,0 +1,6 @@
+<h2>Users</h2>
+<ul>
+{{#people}}
+  <li>{{ forename }} {{ surname }} (<a href='#/user/{{ username }}'>@{{ username }}</a>)</li>
+{{/people}}
+</ul>
