@@ -29,7 +29,7 @@ function search(haystack, attrs, query) {
         attrs.forEach((attr) => {
             score += jaccard(a, ngrams(x[attr]))
         });
-        if (score > 0) {
+        if (score > 0.25) {
             h.push([score, x]);
         }
     });

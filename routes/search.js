@@ -4,15 +4,18 @@ const schema = require('../schema');
 const search = require('../search');
 
 
+const USER_ATTRS = ['username', 'forename', 'surname'];
+const POLL_ATTRS = ['name', 'description'];
+
+
 router.post('/', schema.validate({body: schema.search_schema}), (req, res) => {
     const q = req.body.q;
-    const users = req.body.include_users
-        ? search(Object.values(db.users), ['username', 'forename', 'surname'], q).map(x => x.to_json())
-        : [];
-    const polls = req.body.include_polls
-        ? search(Object.values(db.polls), ['name', 'description'], q).map(x => x.to_json())
-        : [];
-    res.json({users, polls});
+    const users = req.body.include_users ? search(Object.values(db.users), USER_ATTRS, q) : [];
+    const polls = req.body.include_polls ? search(Object.values(db.polls), POLL_ATTRS, q) : [];
+    res.json({
+        users: users.map(x => x.to_json()),
+        polls: users.map(x => x.to_json()),
+    });
 });
 
 

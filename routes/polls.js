@@ -9,9 +9,8 @@ router.post('/', needs_auth,
     schema.validate({body: schema.create_poll_schema}),
     (req, res) => {
         const user = get_user(req);
-        // workaround because [].reduce => typeerror
         const keys = Object.keys(polls);
-        const id = keys.length > 0
+        const id = (keys.length > 0)  // [].reduce => typeerror
             ? 1 + +keys.reduce((a, b) => Math.max(+a, +b))
             : 1;
         polls[id] = new Poll({
@@ -28,7 +27,7 @@ router.post('/', needs_auth,
 router.get('/:id', (req, res) => {
     const user = get_user(req);
     const poll = polls[req.params.id];
-    if (poll === undefined) {
+    if (!poll) {
         res.status(404);
         res.end();
         return;
@@ -40,14 +39,12 @@ router.get('/:id', (req, res) => {
 function check_poll_same_user(req, res, next) {
     const poll = polls[req.params.id];
     const user = get_user(req);
-    if (poll === undefined) {
-        res.status(404);
-        res.end();
+    if (!poll) {
+        res.status(404).end();
         return;
     }
     if (user !== poll.user) {
-        res.status(403);
-        res.end();
+        res.status(403).end();
         return;
     }
     next();
@@ -87,7 +84,7 @@ router.delete('/:id',
     });
 
 
-router.post('/:id/option/:opt',
+router.post('/:id/vote/:opt',
     needs_auth,
     (req, res) => {
         const user = get_user(req);
@@ -109,7 +106,7 @@ router.post('/:id/option/:opt',
     });
 
 
-router.delete('/:id/option/:opt',
+router.delete('/:id/vote/:opt',
     needs_auth,
     (req, res) => {
         const user = get_user(req);

@@ -10,8 +10,7 @@
 <span class='meta'>{{ user.forename }} {{ user.surname }} (<a href='#/user/{{user.username}}'>@{{ user.username }}</a>)</span>
 <p>{{ description }}</p>
 
-<hr/>
-
+<hr />
 <div id='votes'>
 {{#votes}}
   <div class='vote'>
@@ -29,10 +28,8 @@
   <span class='gray'>there seems to be no options</span>
 {{/votes}}
 </div>
-<div class='clearfix'/>
 
-<hr/>
-
+<hr />
 <form id='comment-box'>
     <textarea name='text'/>
     <button class='comment-box-submit'>Reply</button>

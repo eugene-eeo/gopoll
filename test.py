@@ -13,8 +13,8 @@ assert r.status_code == 400
 # GET /people
 r = s.get(u + '/people')
 assert r.status_code == 200
-assert len(r.json()) == 2
-assert {u['username'] for u in r.json()} == {'eeo', 'doctorwhocomposer'}
+assert len(r.json()) == 4
+assert {u['username'] for u in r.json()} == {'eeo', 'doctorwhocomposer', 'eeojun', 'shufay'}
 
 # GET /people/:username
 r = s.get(u + '/people/eeo')
@@ -73,18 +73,18 @@ r = s.put(u + '/poll/1', json={
 assert r.status_code == 200
 assert {opt['id'] for opt in s.get(u + '/poll/1').json()['votes']} == {1, 2}
 
-assert s.post(u + '/poll/1/option/1').status_code == 200 # first vote ok
-assert s.post(u + '/poll/1/option/1').status_code == 401 # 2nd vote not ok
-assert s.post(u + '/poll/1/option/2').status_code == 401 # cannot vote 2nd option
-#assert s.delete(u + '/poll/1/option/2').status_code == 404
-#assert s.delete(u + '/poll/1/option/1').status_code == 200
-#assert s.post(u + '/poll/1/option/1').status_code == 200
+assert s.post(u + '/poll/1/vote/1').status_code == 200 # first vote ok
+assert s.post(u + '/poll/1/vote/1').status_code == 401 # 2nd vote not ok
+assert s.post(u + '/poll/1/vote/2').status_code == 401 # cannot vote 2nd vote
+assert s.delete(u + '/poll/1/vote/2').status_code == 404
+assert s.delete(u + '/poll/1/vote/1').status_code == 200
+assert s.post(u + '/poll/1/vote/1').status_code == 200
 
 # check that vote counting is ok
-#r = s.get(u + '/poll/1')
-#assert r.status_code == 200
-#assert r.json()['votes'][0]['num'] == 1
-#assert r.json()['votes'][1]['num'] == 0
+r = s.get(u + '/poll/1')
+assert r.status_code == 200
+assert r.json()['votes'][0]['num'] == 1
+assert r.json()['votes'][1]['num'] == 0
 
 # modify poll options
 r = s.put(u + '/poll/1', json={
@@ -127,9 +127,9 @@ assert s.delete(u + f'/comment/{id}').status_code == 200
 assert s.get(u + '/poll/1').json()['comments'] == []
 
 # delete poll
-#assert s.delete(u + '/poll/3').status_code == 404
-#assert s.delete(u + '/poll/1').status_code == 200
-#assert s.get(u + '/poll/1').status_code == 404
+assert s.delete(u + '/poll/3').status_code == 404
+assert s.delete(u + '/poll/1').status_code == 200
+assert s.get(u + '/poll/1').status_code == 404
 
 # POST /auth/logout
 r = s.post(u + '/auth/logout')

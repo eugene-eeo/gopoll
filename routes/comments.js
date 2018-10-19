@@ -11,28 +11,21 @@ router.post('/',
     needs_auth,
     schema.validate({body: schema.create_comment_schema}),
     (req, res) => {
+        // find what the comment is replying to since both comment and
+        // poll share similar structure this is ok.
+        let reply_to = null;
+        if (req.body.reply_to !== undefined) reply_to = comments[req.body.reply_to];
+        if (req.body.poll_id  !== undefined) reply_to = polls[req.body.poll_id];
+        if (!reply_to) {
+            error(res, "need reply_to or poll_id");
+            return;
+        }
         const uuid = uuidv4();
         const comment = new Comment({
             id: uuid,
             text: req.body.text,
             user: get_user(req),
         });
-        // find what the comment is replying to
-        // since both comment and poll share similar structure
-        // this is ok.
-        let reply_to = (req.body.poll_id !== undefined)
-            ? polls[req.body.poll_id]
-            : (req.body.reply_to !== undefined)
-                ? comments[req.body.reply_to]
-                : null;
-        if (reply_to == null) {
-            error(res, "need reply_to or poll_id");
-            return;
-        }
-        if (!reply_to) {
-            res.status(404).end();
-            return;
-        }
         reply_to.comments.push(comment);
         comment.parent = reply_to;
         comments[uuid] = comment;
