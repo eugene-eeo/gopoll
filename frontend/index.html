@@ -19,6 +19,7 @@ body {
 #search input[name=q] { width: 100%; display: block; }
 
 a { color: blue; text-decoration: underline; }
+a:hover { cursor: pointer; }
 
 hr { border: none; background-color: #000; height: 1px; }
 button, input, textarea { font: inherit; }
@@ -36,10 +37,11 @@ nav   { float: right; }
 nav a { padding: 0em 0.5em; }
 .clearfix { clear: both; }
 
-#poll .voted { color: green; font-weight: bold; }
+#comment-box textarea { width: 100%; height: 4em; }
 
-#comment-box textarea { width: 100%; }
+textarea { resize: vertical; }
 
+#poll .voted { font-weight: bold; }
 #poll #poll-panel {
   float: right;
   display: inline-block;
@@ -77,9 +79,6 @@ nav a { padding: 0em 0.5em; }
   <div class='clearfix'>
   <hr/>
   <div id='content'></div>
-  <script>
-
-  </script>
   <script src='/js/ui.js'></script>
 </body>
 </html>

@@ -16,7 +16,6 @@ function trim_description(poll) {
 }
 
 
-
 $.hashroute('middleware', function() {
     if (window.done) return this.next();
     var that = this;
@@ -98,7 +97,6 @@ $(document).hashroute('/people', function() {
 
 
 $(document).hashroute('/register', function() {
-    console.log(1);
     if (window.current_user) {
         visit('');
         return;
@@ -115,10 +113,10 @@ $(document).hashroute('/register', function() {
         var password        = $form.find('[name=password]').val();
         var password_repeat = $form.find('[name=password-repeat]').val();
 
-        (forename.length === 0)        && errors.push('empty first name');
-        (surname.length === 0)         && errors.push('empty last name');
-        (username.length === 0)        && errors.push('empty username');
-        (password !== password_repeat) && errors.push('passwords don\'t match');
+        (forename.length === 0)        && errors.push('First name is empty');
+        (surname.length === 0)         && errors.push('Last name is empty');
+        (username.length === 0)        && errors.push('Username is empty');
+        (password !== password_repeat) && errors.push('Passwords don\'t match');
 
         if (errors.length !== 0) {
             errors.forEach(function(err) {
@@ -202,13 +200,23 @@ $(document).hashroute('/', function() {
     });
 });
 
-$(document).hashroute('/poll/:id', function(e) {
-    function make_comment(json) {
+$(document).hashroute('/poll/:id', function reload(e) {
+    function dump_in_errors(r) {
+        if (r.responseJSON) {
+            var err = r.responseJSON.error;
+            $('#errors').html($("<span class='error'>"+err+"</span>"));
+        }
+    }
+
+    function make_comment($parent, json, done) {
         $.ajax('/api/comment/', {
             method: 'POST',
             data: JSON.stringify(json),
-            success: function() { reload(); },
-            error: function(data) { reload(); },
+            success: function(data) {
+                render_comment($parent, data);
+                done && done();
+            },
+            error: dump_in_errors,
         });
     }
 
@@ -216,88 +224,88 @@ $(document).hashroute('/poll/:id', function(e) {
         comment.repliable = window.current_user !== null;
         comment.deletable = window.current_user && comment.user.username === window.current_user.username;
         var $comment = $(Mustache.render(Templates.comment, comment));
+        var $list = $comment.children('.comment-children');
         $el.append($comment);
         comment.comments.forEach(function(reply) {
-            render_comment($comment, reply);
+            render_comment($list, reply);
         });
     }
 
-    function reload() {
-        $.ajax('/api/poll/' + e.params.id, {
-            success: function(poll) {
-                poll.editable = window.current_user && poll.user.username === window.current_user.username;
-                $('#content').html(Mustache.render(Templates.poll, poll));
-                poll.comments.forEach(function(comment) { render_comment($('#content'), comment); });
-                // reply to main poll thread
-                $('#content').find('.comment-box-submit').click(function(e) {
-                    e.preventDefault();
-                    var $el = $('#content').find('#comment-box');
-                    var text = $el.find('[name=text]').val();
+    $.ajax('/api/poll/' + e.params.id, {
+        success: function(poll) {
+            poll.editable = window.current_user && poll.user.username === window.current_user.username;
+            $('#content').html(Mustache.render(Templates.poll, poll));
+            poll.comments.forEach(function(comment) { render_comment($('#comments'), comment); });
+            // reply to main poll thread
+            $('#content').find('.comment-box-submit').click(function(e) {
+                e.preventDefault();
+                var $textbox = $('#comment-box > textarea[name=text]');
+                var text = $textbox.val();
+                if (text.length > 0) {
+                    make_comment(
+                        $('#comments'),
+                        {text: text, poll_id: poll.id},
+                        function() { $textbox.val(''); },
+                    );
+                }
+            });
+
+            $('#content').find('.add-vote').click(function() {
+                var $this = $(this);
+                var id = $this.data('id');
+                $.ajax('/api/poll/' + poll.id + '/vote/' + id, {
+                    method: 'POST',
+                    success: function() { reload(e); },
+                    error: dump_in_errors,
+                });
+            });
+
+            $('#content').find('.add-unvote').click(function() {
+                var $this = $(this);
+                var id = $this.data('id');
+                $.ajax('/api/poll/' + poll.id + '/vote/' + id, {
+                    method: 'DELETE',
+                    success: function() { reload(e); },
+                    error: dump_in_errors,
+                });
+            });
+
+            $('#comments').on('click', '.comment-delete', function(e) {
+                var $this = $(this);
+                var $panel = $this.parent();
+                var id = $panel.data('comment-id');
+                $.ajax('/api/comment/' + id, {
+                    method: 'DELETE',
+                    success: function() { $panel.parent().remove(); },
+                    error: dump_in_errors,
+                });
+            });
+
+            $('#comments').on('click', '.comment-reply', function(e) {
+                var $this = $(this);
+                var $panel = $this.parent();
+                var $comment = $panel.parent();
+                var id = $panel.data('comment-id');
+
+                var $div = $('<div class="comment-reply-dialog">');
+                $div.append($('<textarea class="comment-reply-text"/>'))
+                    .append($('<button class="save">save</button>'))
+                    .append($('<button class="cancel">cancel</button>'));
+                $div.find('.save').click(function() {
+                    var text = $div.children('.comment-reply-text').val();
                     if (text.length > 0) {
-                        make_comment({
-                            text: text,
-                            poll_id: poll.id,
-                        });
+                        make_comment($comment.children('.comment-children'), {text: text, reply_to: id});
+                        $div.remove();
                     }
                 });
-
-                $('#content').find('.add-vote').click(function(e) {
-                    var id = $(this).data('id');
-                    $.ajax('/api/poll/' + poll.id + '/option/' + id, {
-                        method: 'POST',
-                        success: function() { reload(); },
-                        error: function(data) { reload(); },
-                    });
+                $div.find('.cancel').click(function() {
+                    $div.remove();
                 });
-
-                $('#content').find('.add-unvote').click(function(e) {
-                    var id = $(this).data('id');
-                    $.ajax('/api/poll/' + poll.id + '/option/' + id, {
-                        method: 'DELETE',
-                        success: function() { reload(); },
-                        error: function(data) { reload(); },
-                    });
-                });
-
-                $('.comment-delete').click(function(e) {
-                    var $this = $(this);
-                    var $panel = $this.parent();
-                    var id = $panel.data('comment-id');
-                    $.ajax('/api/comment/' + id, {
-                        method: 'DELETE',
-                        success: reload,
-                        error: reload,
-                    });
-                });
-
-                $('.comment-reply').click(function(e) {
-                    var $this = $(this);
-                    var $panel = $this.parent();
-                    var id = $panel.data('comment-id');
-
-                    var $div = $('<div class="comment-reply-dialog">');
-                    $div.append($('<textarea class="comment-reply-text"/>'))
-                        .append($('<button class="save">save</button>'))
-                        .append($('<button class="cancel">cancel</button>'));
-                    $div.find('.save').click(function() {
-                        var text = $div.find('.comment-reply-text').val();
-                        if (text.length > 0) {
-                            make_comment({text: text, reply_to: id});
-                            $div.remove();
-                        }
-                    });
-                    $div.find('.cancel').click(function() {
-                        $div.remove();
-                    });
-
-                    $panel.append($div);
-                });
-            },
-            error: function(data) { $('#content').html('Poll not found.'); }
-        });
-    }
-
-    reload();
+                $panel.append($div);
+            });
+        },
+        error: function() { $('#content').html('Poll not found.'); }
+    });
 });
 
 
@@ -374,19 +382,19 @@ $(document).hashroute('/search', function() {
         let q = $('input[name=q]').val();
         let include_users = $('input[name=include_users]').prop('checked');
         let include_polls = $('input[name=include_polls]').prop('checked');
-        if (q.length > 0 && (include_users || include_polls)) {
-            $.ajax('/api/search', {
-                method: 'POST',
-                data: JSON.stringify({q: q, include_users: include_users, include_polls: include_polls}),
-                success: function(data) {
-                    console.log(data);
-                    $('#results').html(Mustache.render(Templates.search_results, {
-                        has_results: (data.polls.length > 0) || (data.users.length > 0),
-                        users: data.users,
-                        polls: data.polls.map(x => { trim_description(x); return x; }),
-                    }));
-                },
-            })
+        if (q.length === 0 || (!include_users && !include_polls)) {
+            return;
         }
+        $.ajax('/api/search', {
+            method: 'POST',
+            data: JSON.stringify({q: q, include_users: include_users, include_polls: include_polls}),
+            success: function(data) {
+                $('#results').html(Mustache.render(Templates.search_results, {
+                    has_results: (data.polls.length > 0) || (data.users.length > 0),
+                    users: data.users,
+                    polls: data.polls.map(x => { trim_description(x); return x; }),
+                }));
+            },
+        })
     });
 });

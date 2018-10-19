@@ -14,7 +14,7 @@ router.post('/', schema.validate({body: schema.search_schema}), (req, res) => {
     const polls = req.body.include_polls ? search(Object.values(db.polls), POLL_ATTRS, q) : [];
     res.json({
         users: users.map(x => x.to_json()),
-        polls: users.map(x => x.to_json()),
+        polls: polls.map(x => x.to_json()),
     });
 });
 

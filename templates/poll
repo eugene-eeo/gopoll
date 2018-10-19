@@ -1,39 +1,38 @@
 <div id='poll'>
-{{#editable}}
-<div id='poll-panel'>
-  <a href='#/edit-poll/{{ id }}'>edit</a>
-  <a href='#/delete-poll/{{ id }}'>delete</a>
-</div>
-{{/editable}}
-
-<h2 class='poll-title'>{{ name }}</h2>
-<span class='meta'>{{ user.forename }} {{ user.surname }} (<a href='#/user/{{user.username}}'>@{{ user.username }}</a>)</span>
-<p>{{ description }}</p>
-
-<hr />
-<div id='votes'>
-{{#votes}}
-  <div class='vote'>
-    {{^voted}}
-      <span class='poll-option not-voted'>{{ name }} ({{ num }})</span>
-      <a class='add-vote' data-id='{{ id }}'>vote</a>
-    {{/voted}}
-    {{#voted}}
-      <span class='poll-option voted'>{{ name }} ({{ num }})</span>
-      <a class='add-unvote' data-id='{{ id }}'>unvote</a>
-    {{/voted}}
+  <div id='errors'></div>
+  {{#editable}}
+  <div id='poll-panel'>
+    <a href='#/edit-poll/{{ id }}'>edit</a>
+    <a href='#/delete-poll/{{ id }}'>delete</a>
   </div>
-{{/votes}}
-{{^votes}}
-  <span class='gray'>there seems to be no options</span>
-{{/votes}}
-</div>
+  {{/editable}}
 
-<hr />
-<form id='comment-box'>
-    <textarea name='text'/>
-    <button class='comment-box-submit'>Reply</button>
-</form>
+  <h2 class='poll-title'>{{ name }}</h2>
+  <span class='meta'>{{ user.forename }} {{ user.surname }} (<a href='#/user/{{user.username}}'>@{{ user.username }}</a>)</span>
+  <p>{{ description }}</p>
 
-<div id='comments'></div>
+  <hr />
+  <div id='votes'>
+  {{#votes}}
+    <div class='vote'>
+      {{^voted}}
+        <span class='poll-option not-voted'>{{ name }} ({{ num }})</span>
+        <a class='add-vote' data-id='{{ id }}'>vote</a>
+      {{/voted}}
+      {{#voted}}
+        <span class='poll-option voted'>{{ name }} ({{ num }})</span>
+        <a class='add-unvote' data-id='{{ id }}'>unvote</a>
+      {{/voted}}
+    </div>
+  {{/votes}}
+  {{^votes}}<span class='gray'>no vote options</span>{{/votes}}
+  </div>
+
+  <hr />
+  <form id='comment-box'>
+      <textarea name='text'/>
+      <button class='comment-box-submit'>Reply</button>
+  </form>
+
+  <div id='comments'></div>
 </div>
