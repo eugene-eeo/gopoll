@@ -6,10 +6,10 @@ assignment for durham programming paradigms module
    - [x] core functionality
    - [ ] responsive
    - [ ] make nice
- - [ ] backend
+ - [x] backend
    - [x] `/people`
    - [x] `/auth`
    - [x] `/poll`
    - [x] `/comment`
-   - [ ] `/search`
+   - [x] `/search`
    - [x] use token instead of login=username for cookie
