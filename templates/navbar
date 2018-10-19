@@ -1,0 +1,10 @@
+<a href='#/people'>users</a>
+<a href='#/search'>search</a>
+{{#logged_in}}
+<a href='#/'>dashboard</a>
+<a href='#/create-poll'>create-poll</a>
+<a href='#/logout'>logout</a>
+{{/logged_in}}
+{{^logged_in}}
+<a href='#/login'>login</a>
+{{/logged_in}}

@@ -9,6 +9,14 @@ function visit(x) {
 }
 
 
+function trim_description(poll) {
+    if (poll.description.length > 190) {
+        poll.description = poll.description.substr(0, 187) + '...';
+    }
+}
+
+
+
 $.hashroute('middleware', function() {
     if (window.done) return this.next();
     var that = this;
@@ -25,17 +33,7 @@ $.hashroute('middleware', function() {
 
 // inject navbar
 $.hashroute('middleware', function() {
-    var nav = $('nav');
-    nav.html('')
-       .append($('<a href="#/people">users</a>'));
-    if (window.current_user) {
-        nav.append($('<a href="#/">dashboard</a>'))
-           .append($('<a href="#/create-poll">create poll</a>'))
-           .append($('<a href="#/settings">settings</a>'))
-           .append($('<a href="#/logout">logout</a>'));
-    } else {
-        nav.append($('<a href="#/login">login</a>'));
-    }
+    $('nav').html(Mustache.render(Templates.navbar, {logged_in: !!window.current_user}));
     this.next();
 });
 
@@ -193,14 +191,9 @@ $(document).hashroute('/logout', function() {
 $(document).hashroute('/', function() {
     $.ajax('/api/auth/me', {
         success: function(data) {
-            function trim(poll) {
-                if (poll.description.length > 190) {
-                    poll.description = poll.description.substr(0, 187) + '...';
-                }
-            }
             window.current_user = data;
-            data.polls_created.forEach(trim);
-            data.polls_participated.forEach(trim);
+            data.polls_created.forEach(trim_description);
+            data.polls_participated.forEach(trim_description);
             $('#content').html(Mustache.render(Templates.dashboard, data));
         },
         error: function(data) {
@@ -370,5 +363,30 @@ $(document).hashroute('/edit-poll/:id', function(e) {
                 });
             });
         },
+    });
+});
+
+
+$(document).hashroute('/search', function() {
+    $('#content').html(Mustache.render(Templates.search, {}));
+    $('#content').find('#search-form').submit(function(e) {
+        e.preventDefault();
+        let q = $('input[name=q]').val();
+        let include_users = $('input[name=include_users]').prop('checked');
+        let include_polls = $('input[name=include_polls]').prop('checked');
+        if (q.length > 0 && (include_users || include_polls)) {
+            $.ajax('/api/search', {
+                method: 'POST',
+                data: JSON.stringify({q: q, include_users: include_users, include_polls: include_polls}),
+                success: function(data) {
+                    console.log(data);
+                    $('#results').html(Mustache.render(Templates.search_results, {
+                        has_results: (data.polls.length > 0) || (data.users.length > 0),
+                        users: data.users,
+                        polls: data.polls.map(x => { trim_description(x); return x; }),
+                    }));
+                },
+            })
+        }
     });
 });

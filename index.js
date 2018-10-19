@@ -16,5 +16,6 @@ app.use('/api/people',  require('./routes/people'));
 app.use('/api/auth',    require('./routes/auth'));
 app.use('/api/poll',    require('./routes/polls'));
 app.use('/api/comment', require('./routes/comments'));
+app.use('/api/search',  require('./routes/search'));
 
 app.listen(3000, () => {});

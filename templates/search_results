@@ -1,0 +1,14 @@
+{{#has_results}}<hr/>{{/has_results}}
+<h3>Users</h3>
+{{#users}}
+<div class='search-user'>
+    {{ forename }} {{ surname }} (<a href='#/user/{{ username }}'>@{{ username }}</a>)
+</div>
+{{/users}}
+<h3>Polls</h3>
+{{#polls}}
+<div class='poll-tiny'>
+    <span class='name'><a href='#/poll/{{ id }}'>{{ name }}</a></span>
+    <span class='description'>{{ description }}</span>
+</div>
+{{/polls}}

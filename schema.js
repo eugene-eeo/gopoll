@@ -79,6 +79,17 @@ const update_comment_schema = {
     },
 };
 
+// search
+const search_schema = {
+    type: 'object',
+    required: ['q', 'include_users', 'include_polls'],
+    properties: {
+        q: {type: 'string', minLength: 1},
+        include_users: {type: 'boolean'},
+        include_polls: {type: 'boolean'},
+    },
+};
+
 module.exports = {
     validate,
     create_user_schema,
@@ -87,4 +98,5 @@ module.exports = {
     update_poll_schema,
     create_comment_schema,
     update_comment_schema,
+    search_schema,
 };
