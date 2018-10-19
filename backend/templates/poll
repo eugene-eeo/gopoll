@@ -15,11 +15,12 @@
 <div id='votes'>
 {{#votes}}
   <div class='vote'>
-    <span class='name {{#voted}}voted{{/voted}}'>{{ name }} ({{ num }})</span>
     {{^voted}}
+      <span class='poll-option not-voted'>{{ name }} ({{ num }})</span>
       <a class='add-vote' data-id='{{ id }}'>vote</a>
     {{/voted}}
     {{#voted}}
+      <span class='poll-option voted'>{{ name }} ({{ num }})</span>
       <a class='add-unvote' data-id='{{ id }}'>unvote</a>
     {{/voted}}
   </div>

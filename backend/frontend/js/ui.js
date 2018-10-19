@@ -98,21 +98,69 @@ $(document).hashroute('/people', function() {
 });
 
 
+$(document).hashroute('/register', function() {
+    console.log(1);
+    if (window.current_user) {
+        visit('');
+        return;
+    }
+    $('#content').html(Mustache.render(Templates.register));
+    $('#content').find('#register').submit(function(evt) {
+        evt.preventDefault();
+        var $form = $('#register');
+        var $errors = $('#errors').html('');
+        var errors = [];
+        var forename        = $form.find('[name=forename]').val();
+        var surname         = $form.find('[name=surname]').val();
+        var username        = $form.find('[name=username]').val();
+        var password        = $form.find('[name=password]').val();
+        var password_repeat = $form.find('[name=password-repeat]').val();
+
+        (forename.length === 0)        && errors.push('empty first name');
+        (surname.length === 0)         && errors.push('empty last name');
+        (username.length === 0)        && errors.push('empty username');
+        (password !== password_repeat) && errors.push('passwords don\'t match');
+
+        if (errors.length !== 0) {
+            errors.forEach(function(err) {
+                $errors.append($("<span class='error'>"+err+"</span>"));
+            });
+            return;
+        }
+        $.ajax('/api/people', {
+            method: 'POST',
+            data: JSON.stringify({
+                forename: forename,
+                surname: surname,
+                username: username,
+                password: password,
+            }),
+            success: function() { visit('login'); },
+            error: function(e) {
+                if (e.responseJSON) {
+                    var err = e.responseJSON.error;
+                    $errors.append($("<span class='error'>"+err+"</span>"));
+                }
+            },
+        });
+    });
+});
+
+
 $(document).hashroute('/login', function() {
     if (window.current_user) {
         visit('');
         return;
     }
-    var $error = $('<div class="error"></div>');
-    var $form = $(
-        '<form>' +
-        'Username: <input name="username" type="text"/><br/>' +
-        'Password: <input name="password" type="password"/><br/>' +
-        '<input type="submit" value="log in">' +
-        '</form>'
-    );
-    $form.submit(function(evt) {
+    $('#content').html(Mustache.render(Templates.login));
+    $('#content').find('#register').click(function(e) {
+        e.preventDefault();
+        visit('/register');
+    });
+    $('#content').find('#login').submit(function(evt) {
         evt.preventDefault();
+        var $form = $('#login');
+        var $errors = $('#errors').html('');
         var username = $form.find('input[name=username]').val();
         var password = $form.find('input[name=password]').val();
         $.ajax('/api/auth/login', {
@@ -125,12 +173,12 @@ $(document).hashroute('/login', function() {
                 window.current_user = user;
                 visit('');
             },
-            error: function(data) { data['error'] && $error.text(data['error']); },
+            error: function(e) {
+                var json = e.responseJSON;
+                json && json['error'] && $errors.html("<span class='error'>"+json['error']+"</span>");
+            },
         });
     });
-    $('#content').html('')
-        .append($error)
-        .append($form);
 });
 
 
