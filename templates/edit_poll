@@ -7,7 +7,7 @@
   <h3>Options</h3>
   <div id='edit-poll-options'></div>
   <div id='add-poll-options'>
-    <input name='add-poll-option'></input><button id='add-option'>add</button>
+    <input id='add-poll-option-text' name='add-poll-option'></input><button id='add-option'>add</button>
   </div>
 
   <hr/>

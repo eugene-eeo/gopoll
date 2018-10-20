@@ -1,1 +1,1 @@
-<div data-id='{{ id }}'><input data-id='{{ id }}' value='{{ name }}'/><button>-</button></div>
+<div data-id='{{ id }}'><input data-id='{{ id }}' value='{{ name }}'/><button class='remove-option'>-</button></div>

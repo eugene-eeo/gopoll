@@ -321,13 +321,13 @@ $(document).hashroute('/delete-poll/:id', function(e) {
 $(document).hashroute('/edit-poll/:id', function(e) {
     function render_option($parent, option) {
         var $div = $(Mustache.render(Templates.poll_option, option));
-        $div.find('button').click(function() { $div.remove(); });
+        $div.find('button.remove-option').click(function() { $div.remove(); });
         $parent.append($div);
     }
 
     $.ajax('/api/poll/' + e.params.id, {
         success: function(poll) {
-            if (!window.current_user) return visit('#/login');
+            if (!window.current_user) return visit('/login');
             if (poll.user.username !== window.current_user.username) return visit('');
             $('#content').html(Mustache.render(Templates.edit_poll, poll));
 
@@ -339,13 +339,20 @@ $(document).hashroute('/edit-poll/:id', function(e) {
                 id = Math.max(id, vote.id);
             });
 
-            $('#content').find('#add-option').click(function() {
-                var $name = $('[name=add-poll-option]');
+            function add_option() {
+                var $name = $('#add-poll-option-text');
                 var name = $name.val();
                 if (name.length > 0) {
                     id++;
                     render_option($opts, {id: id, name: name});
                     $name.val('');
+                }
+            }
+
+            $('#content').find('#add-option').click(add_option);
+            $('#add-poll-option-text').keypress(function(e) {
+                if (e.which === 13) {
+                    add_option();
                 }
             });
 
@@ -389,10 +396,11 @@ $(document).hashroute('/search', function() {
             method: 'POST',
             data: JSON.stringify({q: q, include_users: include_users, include_polls: include_polls}),
             success: function(data) {
+                data.polls.forEach(trim_description);
                 $('#results').html(Mustache.render(Templates.search_results, {
                     has_results: (data.polls.length > 0) || (data.users.length > 0),
                     users: data.users,
-                    polls: data.polls.map(x => { trim_description(x); return x; }),
+                    polls: data.polls,
                 }));
             },
         })
