@@ -180,9 +180,14 @@ $(document).hashroute('/login', function() {
 
 
 $(document).hashroute('/logout', function() {
-    Cookies.remove('token');
-    window.current_user = null;
-    visit('');
+    $.ajax('/api/logout', {
+        method: 'POST',
+        success: () => {
+            window.current_user = null;
+            visit('');
+        },
+        // TODO: handle error
+    });
 });
 
 

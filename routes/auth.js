@@ -40,7 +40,9 @@ router.get('/me', needs_auth, (req, res) => {
     });
 });
 
+
 router.post('/logout', needs_auth, (req, res) => {
+    delete tokens[req.signedCookies.token];
     res.clearCookie('token');
     res.json({});
 });

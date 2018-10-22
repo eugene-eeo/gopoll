@@ -1,12 +1,10 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
-const cors = require('cors');
 const app = express();
 
 // middleware
 app.use(morgan('tiny'));
-app.use(cors());
 app.use(express.json());
 app.use(cookieParser('secret'));
 

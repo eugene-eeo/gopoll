@@ -4,7 +4,7 @@ function Poll({id, name, description, multi, user}) {
     this.description = description;
     this.multi = multi;  // whether multiple options can be selected
     this.user = user;
-    this.options = [];
+    this.options = [];  // { id, name, users (private) }
     this.comments = [];
 }
 

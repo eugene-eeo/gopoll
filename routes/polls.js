@@ -61,9 +61,8 @@ router.put('/:id',
         poll.name = req.body.name;
         poll.description = req.body.description;
         poll.options = req.body.options.map(opt => {
-            opt.users = poll.find_option(opt.id)
-                ? op2.users
-                : [];
+            const op2 = poll.find_option(opt.id);
+            opt.users = op2 ? op2.users : [];
             return opt;
         });
         res.json(poll.to_json_with_details(user));
