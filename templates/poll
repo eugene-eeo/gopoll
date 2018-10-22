@@ -3,6 +3,7 @@
   {{#editable}}
   <div id='poll-panel'>
     <a href='#/edit-poll/{{ id }}'>edit</a>
+    {{^finalized}}<a href='#/finalize-poll/{{ id }}'>finalize</a>{{/finalized}}
     <a href='#/delete-poll/{{ id }}'>delete</a>
   </div>
   {{/editable}}
@@ -13,22 +14,36 @@
 
   <hr />
   <div id='votes'>
-  {{#votes}}
-    <div class='vote'>
-      {{^voted}}
-        <span class='poll-option not-voted'>{{ name }} ({{ num }})</span>
-        <a class='add-vote' data-id='{{ id }}'>vote</a>
-      {{/voted}}
-      {{#voted}}
-        <span class='poll-option voted'>{{ name }} ({{ num }})</span>
-        <a class='add-unvote' data-id='{{ id }}'>unvote</a>
-      {{/voted}}
-    </div>
-  {{/votes}}
-  {{^votes}}<span class='gray'>no vote options</span>{{/votes}}
+  {{^finalized}}
+    {{#votes}}
+      <div class='vote'>
+        {{^voted}}
+          <span class='poll-option not-voted'>{{ name }} ({{ num }})</span>
+          <a class='add-vote' data-id='{{ id }}'>vote</a>
+        {{/voted}}
+        {{#voted}}
+          <span class='poll-option voted'>{{ name }} ({{ num }})</span>
+          <a class='add-unvote' data-id='{{ id }}'>unvote</a>
+        {{/voted}}
+      </div>
+    {{/votes}}
+    {{^votes}}<span class='gray'>no vote options</span>{{/votes}}
+  {{/finalized}}
+  {{#finalized}}
+    {{#votes}}
+      <div class='vote finalized'>
+        <span class='poll-option{{^voted}} not-voted{{/voted}}{{#voted}} voted{{/voted}}'>{{ name }} ({{ num }})</span>
+      </div>
+    {{/votes}}
+    {{^votes}}<span class='gray'>no vote options</span>{{/votes}}
+  {{/finalized}}
   </div>
 
   <hr />
+  {{#finalized}}
+  <p id='poll-finalized'>Poll finalized.</p>
+  <hr />
+  {{/finalized}}
   <form id='comment-box'>
       <textarea name='text'/>
       <button class='comment-box-submit'>Reply</button>

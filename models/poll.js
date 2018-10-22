@@ -6,6 +6,7 @@ function Poll({id, name, description, multi, user}) {
     this.user = user;
     this.options = [];  // { id, name, users (private) }
     this.comments = [];
+    this.finalized = false;
 }
 
 Poll.prototype = {
@@ -16,6 +17,7 @@ Poll.prototype = {
             description: this.description,
             user:        this.user,
             multi:       this.multi,
+            finalized:   this.finalized,
         };
     },
 
@@ -29,6 +31,10 @@ Poll.prototype = {
         }));
         json.comments = this.comments.map(c => c.to_json());
         return json;
+    },
+
+    finalize: function() {
+        this.finalized = true;
     },
 
     find_option: function(id) {

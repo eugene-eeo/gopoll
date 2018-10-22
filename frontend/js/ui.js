@@ -18,14 +18,12 @@ function trim_description(poll) {
 
 $.hashroute('middleware', function() {
     if (window.done) return this.next();
-    var that = this;
-
     $.ajax('/api/auth/me', {
-      success: function(data) { window.current_user = data; },
-      complete: function() {
-          window.done = true;
-          that.next();
-      }
+        success: (data) => { window.current_user = data; },
+        complete: () => {
+            window.done = true;
+            this.next();
+        }
     });
 });
 
@@ -37,10 +35,13 @@ $.hashroute('middleware', function() {
 });
 
 
-$(document).hashroute('/create-poll', function() {
+$(document).hashroute('/create-poll', () => {
+    if (!window.current_user) {
+        return visit('/login');
+    }
     $('#content').html(Mustache.render(Templates.create_poll));
-    $('#content').find('#create').click(function(e) {
-        e.preventDefault();
+    $('#content').find('#create').click((evt) => {
+        evt.preventDefault();
         var name = $('[name=name]').val();
         var desc = $('[name=description]').val();
         var multi = $('[name=multi]').prop('checked');
@@ -62,47 +63,42 @@ $(document).hashroute('/create-poll', function() {
                 description: desc,
                 multi: multi,
             }),
-            success: function(poll) {
-                visit('/poll/' + poll.id);
-            },
-            error: function() {
-                $('#errors').append($('<span>Cannot create poll</span>'));
-            }
+            success: (poll) => visit('/poll/' + poll.id),
+            error: () => $('#errors').append($('<span>Cannot create poll</span>')),
         });
     });
 });
 
 
-$(document).hashroute('/user/:username', function(e) {
+$(document).hashroute('/user/:username', (e) => {
+    if (e.params.username === window.current_user.username) {
+        return visit('/');
+    }
     $.ajax('/api/people/' + e.params.username, {
-        success: function(data) {
-            $('#content').html(Mustache.render(Templates.user, data));
-        },
-        error: function(data) {
-            $('#content').html('User not found.');
-        }
+        success: (data) => $('#content').html(Mustache.render(Templates.user, data)),
+        error: () => $('#content').html('User not found.'),
     });
 });
 
 
-$(document).hashroute('/people', function() {
+$(document).hashroute('/people', () => {
     $.ajax('/api/people', {
-        success: function(data) {
+        success: (people) => {
             $('#content').html(Mustache.render(Templates.people, {
-                people: data
+                people: people,
             }));
         },
     });
 });
 
 
-$(document).hashroute('/register', function() {
+$(document).hashroute('/register', () => {
     if (window.current_user) {
         visit('');
         return;
     }
     $('#content').html(Mustache.render(Templates.register));
-    $('#content').find('#register').submit(function(evt) {
+    $('#content').find('#register').submit((evt) => {
         evt.preventDefault();
         var $form = $('#register');
         var $errors = $('#errors').html('');
@@ -118,9 +114,9 @@ $(document).hashroute('/register', function() {
         (username.length === 0)        && errors.push('Username is empty');
         (password !== password_repeat) && errors.push('Passwords don\'t match');
 
-        if (errors.length !== 0) {
-            errors.forEach(function(err) {
-                $errors.append($("<span class='error'>"+err+"</span>"));
+        if (errors.length > 0) {
+            errors.forEach((err) => {
+                $errors.append($("<span class='error'>" + err + "</span>"));
             });
             return;
         }
@@ -132,29 +128,27 @@ $(document).hashroute('/register', function() {
                 username: username,
                 password: password,
             }),
-            success: function() { visit('login'); },
-            error: function(e) {
-                if (e.responseJSON) {
-                    var err = e.responseJSON.error;
-                    $errors.append($("<span class='error'>"+err+"</span>"));
-                }
+            success: () => visit('login'),
+            error: (r) => {
+                var err = r.responseJSON ? r.responseJSON.error : "Something went wrong.";
+                $errors.append($("<span class='error'>" + err + "</span>"));
             },
         });
     });
 });
 
 
-$(document).hashroute('/login', function() {
+$(document).hashroute('/login', () => {
     if (window.current_user) {
         visit('');
         return;
     }
     $('#content').html(Mustache.render(Templates.login));
-    $('#content').find('#register').click(function(e) {
-        e.preventDefault();
+    $('#register').click((evt) => {
+        evt.preventDefault();
         visit('/register');
     });
-    $('#content').find('#login').submit(function(evt) {
+    $('#login').submit((evt) => {
         evt.preventDefault();
         var $form = $('#login');
         var $errors = $('#errors').html('');
@@ -166,20 +160,20 @@ $(document).hashroute('/login', function() {
                 username: username,
                 password: password,
             }),
-            success: function(user) {
+            success: (user) => {
                 window.current_user = user;
                 visit('');
             },
-            error: function(e) {
-                var json = e.responseJSON;
-                json && json['error'] && $errors.html("<span class='error'>"+json['error']+"</span>");
+            error: (r) => {
+                var json = r.responseJSON;
+                json && $errors.html("<span class='error'>" + json.error + "</span>");
             },
         });
     });
 });
 
 
-$(document).hashroute('/logout', function() {
+$(document).hashroute('/logout', () => {
     $.ajax('/api/logout', {
         method: 'POST',
         success: () => {
@@ -191,17 +185,15 @@ $(document).hashroute('/logout', function() {
 });
 
 
-$(document).hashroute('/', function() {
+$(document).hashroute('/', () => {
     $.ajax('/api/auth/me', {
-        success: function(data) {
+        success: (data) => {
             window.current_user = data;
             data.polls_created.forEach(trim_description);
             data.polls_participated.forEach(trim_description);
             $('#content').html(Mustache.render(Templates.dashboard, data));
         },
-        error: function(data) {
-            visit('/login');
-        }
+        error: () => visit('/login'),
     });
 });
 
@@ -217,7 +209,7 @@ $(document).hashroute('/poll/:id', function reload(e) {
         $.ajax('/api/comment/', {
             method: 'POST',
             data: JSON.stringify(json),
-            success: function(data) {
+            success: (data) => {
                 render_comment($parent, data);
                 done && done();
             },
@@ -231,18 +223,18 @@ $(document).hashroute('/poll/:id', function reload(e) {
         var $comment = $(Mustache.render(Templates.comment, comment));
         var $list = $comment.children('.comment-children');
         $el.append($comment);
-        comment.comments.forEach(function(reply) {
+        comment.comments.forEach((reply) => {
             render_comment($list, reply);
         });
     }
 
     $.ajax('/api/poll/' + e.params.id, {
-        success: function(poll) {
+        success: (poll) => {
             poll.editable = window.current_user && poll.user.username === window.current_user.username;
             $('#content').html(Mustache.render(Templates.poll, poll));
-            poll.comments.forEach(function(comment) { render_comment($('#comments'), comment); });
+            poll.comments.forEach((comment) => render_comment($('#comments'), comment));
             // reply to main poll thread
-            $('#content').find('.comment-box-submit').click(function(e) {
+            $('#content').find('.comment-box-submit').click((e) => {
                 e.preventDefault();
                 var $textbox = $('#comment-box > textarea[name=text]');
                 var text = $textbox.val();
@@ -250,7 +242,7 @@ $(document).hashroute('/poll/:id', function reload(e) {
                     make_comment(
                         $('#comments'),
                         {text: text, poll_id: poll.id},
-                        function() { $textbox.val(''); },
+                        () => $textbox.val(''),
                     );
                 }
             });
@@ -275,13 +267,13 @@ $(document).hashroute('/poll/:id', function reload(e) {
                 });
             });
 
-            $('#comments').on('click', '.comment-delete', function(e) {
+            $('#comments').on('click', '.comment-delete', function() {
                 var $this = $(this);
                 var $panel = $this.parent();
                 var id = $panel.data('comment-id');
                 $.ajax('/api/comment/' + id, {
                     method: 'DELETE',
-                    success: function() { $panel.parent().remove(); },
+                    success: () => $panel.parent().remove(),
                     error: dump_in_errors,
                 });
             });
@@ -296,42 +288,49 @@ $(document).hashroute('/poll/:id', function reload(e) {
                 $div.append($('<textarea class="comment-reply-text"/>'))
                     .append($('<button class="save">save</button>'))
                     .append($('<button class="cancel">cancel</button>'));
-                $div.find('.save').click(function() {
+                $div.find('.save').click(() => {
                     var text = $div.children('.comment-reply-text').val();
                     if (text.length > 0) {
                         make_comment($comment.children('.comment-children'), {text: text, reply_to: id});
                         $div.remove();
                     }
                 });
-                $div.find('.cancel').click(function() {
-                    $div.remove();
-                });
+                $div.find('.cancel').click(() => $div.remove());
                 $panel.append($div);
             });
         },
-        error: function() { $('#content').html('Poll not found.'); }
+        error: () => $('#content').html('Poll not found.'),
     });
 });
 
 
-$(document).hashroute('/delete-poll/:id', function(e) {
+$(document).hashroute('/delete-poll/:id', (e) => {
     $.ajax('/api/poll/' + e.params.id, {
         method: 'DELETE',
-        success: function() { visit('') },
-        error: function() { visit('') },
+        success: () => visit(''),
+        error: () => visit(''),
     });
 });
 
 
-$(document).hashroute('/edit-poll/:id', function(e) {
+$(document).hashroute('/finalize-poll/:id', (e) => {
+    $.ajax('/api/poll/' + e.params.id + '/finalize', {
+        method: 'POST',
+        success: () => visit('/poll/' + e.params.id),
+        error: () => visit('/poll/' + e.params.id),
+    });
+});
+
+
+$(document).hashroute('/edit-poll/:id', (e) => {
     function render_option($parent, option) {
         var $div = $(Mustache.render(Templates.poll_option, option));
-        $div.find('button.remove-option').click(function() { $div.remove(); });
+        $div.find('button.remove-option').click(() => $div.remove());
         $parent.append($div);
     }
 
     $.ajax('/api/poll/' + e.params.id, {
-        success: function(poll) {
+        success: (poll) => {
             if (!window.current_user) return visit('/login');
             if (poll.user.username !== window.current_user.username) return visit('');
             $('#content').html(Mustache.render(Templates.edit_poll, poll));
@@ -339,7 +338,7 @@ $(document).hashroute('/edit-poll/:id', function(e) {
             var $opts = $('#content').find('#edit-poll-options');
             var id = 1;
 
-            poll.votes.forEach(function(vote) {
+            poll.votes.forEach((vote) => {
                 render_option($opts, vote);
                 id = Math.max(id, vote.id);
             });
@@ -354,14 +353,15 @@ $(document).hashroute('/edit-poll/:id', function(e) {
                 }
             }
 
-            $('#content').find('#add-option').click(add_option);
-            $('#add-poll-option-text').keypress(function(e) {
+            $('#add-option').click(add_option);
+            $('#add-poll-option-text').keypress((e) => {
                 if (e.which === 13) {
+                    e.preventDefault();
                     add_option();
                 }
             });
 
-            $('#content').find('#save').click(function() {
+            $('#save').click(() => {
                 var json = {
                     name:        $('[name=name]').val(),
                     description: $('[name=description]').val(),
@@ -378,8 +378,8 @@ $(document).hashroute('/edit-poll/:id', function(e) {
                 $.ajax('/api/poll/' + poll.id, {
                     method: 'PUT',
                     data: JSON.stringify(json),
-                    success: function() { visit('/poll/' + poll.id); },
-                    error:   function(e) { console.log(e); }
+                    success: () => visit('/poll/' + poll.id),
+                    error:   (e) => console.log(e),
                 });
             });
         },
@@ -387,10 +387,10 @@ $(document).hashroute('/edit-poll/:id', function(e) {
 });
 
 
-$(document).hashroute('/search', function() {
+$(document).hashroute('/search', () => {
     $('#content').html(Mustache.render(Templates.search, {}));
-    $('#content').find('#search-form').submit(function(e) {
-        e.preventDefault();
+    $('#search-form').submit((evt) => {
+        evt.preventDefault();
         let q = $('input[name=q]').val();
         let include_users = $('input[name=include_users]').prop('checked');
         let include_polls = $('input[name=include_polls]').prop('checked');
@@ -400,7 +400,7 @@ $(document).hashroute('/search', function() {
         $.ajax('/api/search', {
             method: 'POST',
             data: JSON.stringify({q: q, include_users: include_users, include_polls: include_polls}),
-            success: function(data) {
+            success: (data) => {
                 data.polls.forEach(trim_description);
                 $('#results').html(Mustache.render(Templates.search_results, {
                     has_results: (data.polls.length > 0) || (data.users.length > 0),

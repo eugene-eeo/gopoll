@@ -97,7 +97,7 @@ r = s.put(u + '/poll/1', json={
     ],
 })
 
-# check that its ok
+# check that its ok and vote counts still stay the same w.r.t. IDs
 r = s.get(u + '/poll/1')
 assert r.status_code == 200
 assert r.json()['votes'][0]['num'] == 0
@@ -126,6 +126,12 @@ assert poll['comments'][0]['comments'][1]['text'] == 'ghi'
 assert s.delete(u + f'/comment/{id}').status_code == 200
 assert s.get(u + '/poll/1').json()['comments'] == []
 
+# finalize poll
+assert s.post(u + '/poll/1/finalize').status_code == 200
+assert s.post(u + '/poll/1/vote/1').status_code == 400
+assert s.post(u + '/poll/1/vote/2').status_code == 400
+assert s.delete(u + '/poll/1/vote/1').status_code == 400
+
 # delete poll
 assert s.delete(u + '/poll/3').status_code == 404
 assert s.delete(u + '/poll/1').status_code == 200
@@ -135,3 +141,4 @@ assert s.get(u + '/poll/1').status_code == 404
 r = s.post(u + '/auth/logout')
 assert r.status_code == 200
 assert 'token' not in s.cookies
+assert s.get(u + '/auth/me').status_code == 400

@@ -73,11 +73,16 @@ router.delete('/:id',
     needs_auth,
     check_poll_same_user,
     (req, res) => {
-        if (!polls[req.params.id]) {
-            res.status(404).end();
-            return;
-        }
         delete polls[req.params.id];
+        res.json({});
+    });
+
+
+router.post('/:id/finalize',
+    needs_auth,
+    check_poll_same_user,
+    (req, res) => {
+        polls[req.params.id].finalize();
         res.json({});
     });
 
@@ -87,6 +92,10 @@ router.post('/:id/vote/:opt',
     (req, res) => {
         const user = get_user(req);
         const poll = polls[req.params.id];
+        if (poll.finalized) {
+            error(res, "Cannot cast vote - poll finalized.");
+            return;
+        }
         const option = poll.find_option(+req.params.opt);
         if (!option) {
             res.status(404);
@@ -109,6 +118,10 @@ router.delete('/:id/vote/:opt',
     (req, res) => {
         const user = get_user(req);
         const poll = polls[req.params.id];
+        if (poll.finalized) {
+            error(res, "Cannot delete vote - poll finalized.");
+            return;
+        }
         const option = poll.find_option(+req.params.opt);
         if (!option) {
             res.status(404);
