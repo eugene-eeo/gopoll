@@ -202,7 +202,7 @@ $(document).hashroute('/', () => {
     });
 });
 
-$(document).hashroute('/poll/:id', function reload(e) {
+$(document).hashroute('/poll/:id', (e) => {
     function make_comment($parent, json, done) {
         $.ajax('/api/comment/', {
             method: 'POST',
@@ -225,93 +225,89 @@ $(document).hashroute('/poll/:id', function reload(e) {
         });
     }
 
-    $.ajax('/api/poll/' + e.params.id, {
-        success: (poll) => {
-            poll.editable = window.current_user && poll.user.username === window.current_user.username;
-            $('#content').html(Mustache.render(Templates.poll, poll));
-            poll.comments.forEach((comment) => render_comment($('#comments'), comment));
-            // reply to main poll thread
-            $('#content').find('.comment-box-submit').click((e) => {
-                e.preventDefault();
-                var $textbox = $('#comment-box > textarea[name=text]');
-                var text = $textbox.val();
+    function render_poll(poll) {
+        poll.editable = window.current_user && poll.user.username === window.current_user.username;
+        $('#content').html(Mustache.render(Templates.poll, poll));
+        poll.comments.forEach((comment) => render_comment($('#comments'), comment));
+        // reply to main poll thread
+        $('#content').find('.comment-box-submit').click((e) => {
+            e.preventDefault();
+            var $textbox = $('#comment-box > textarea[name=text]');
+            var text = $textbox.val();
+            if (text.length > 0) {
+                make_comment(
+                    $('#comments'),
+                    {text: text, poll_id: poll.id},
+                    () => $textbox.val(''),
+                );
+            }
+        });
+
+        $('#content').find('.add-vote').click(function() {
+            var $this = $(this);
+            var id = $this.data('id');
+            $.ajax('/api/poll/' + poll.id + '/vote/' + id, {
+                method: 'POST',
+                success: (poll) => render_poll(poll),
+            });
+        });
+
+        $('#content').find('.add-unvote').click(function() {
+            var $this = $(this);
+            var id = $this.data('id');
+            $.ajax('/api/poll/' + poll.id + '/vote/' + id, {
+                method: 'DELETE',
+                success: (poll) => render_poll(poll),
+            });
+        });
+
+        $('#comments').on('click', '.comment-delete', function() {
+            var $this = $(this);
+            var $panel = $this.parent();
+            var id = $panel.data('comment-id');
+            $.ajax('/api/comment/' + id, {
+                method: 'DELETE',
+                success: () => $panel.parent().remove(),
+            });
+        });
+
+        $('#comments').on('click', '.comment-reply', function(e) {
+            var $this = $(this);
+            var $panel = $this.parent();
+            var $comment = $panel.parent();
+            var id = $panel.data('comment-id');
+
+            var $div = $('<div class="comment-reply-dialog">');
+            $div.append($('<textarea class="comment-reply-text"/>'))
+                .append($('<button class="save">save</button>'))
+                .append($('<button class="cancel">cancel</button>'));
+            $div.find('.save').click(() => {
+                var text = $div.children('.comment-reply-text').val();
                 if (text.length > 0) {
-                    make_comment(
-                        $('#comments'),
-                        {text: text, poll_id: poll.id},
-                        () => $textbox.val(''),
-                    );
+                    make_comment($comment.children('.comment-children'), {text: text, reply_to: id});
+                    $div.remove();
                 }
             });
+            $div.find('.cancel').click(() => $div.remove());
+            $panel.append($div);
+        });
 
-            $('#content').find('.add-vote').click(function() {
-                var $this = $(this);
-                var id = $this.data('id');
-                $.ajax('/api/poll/' + poll.id + '/vote/' + id, {
-                    method: 'POST',
-                    success: function() { reload(e); },
-                });
+        $('#delete-poll').click((evt) => {
+            $.ajax('/api/poll/' + poll.id, {
+                method: 'DELETE',
+                success: () => visit(''),
             });
+        });
 
-            $('#content').find('.add-unvote').click(function() {
-                var $this = $(this);
-                var id = $this.data('id');
-                $.ajax('/api/poll/' + poll.id + '/vote/' + id, {
-                    method: 'DELETE',
-                    success: function() { reload(e); },
-                });
+        $('#finalize-poll').click((evt) => {
+            $.ajax('/api/poll/' + poll.id + '/finalize', {
+                method: 'POST',
+                success: (poll) => render_poll(poll),
             });
+        });
+    }
 
-            $('#comments').on('click', '.comment-delete', function() {
-                var $this = $(this);
-                var $panel = $this.parent();
-                var id = $panel.data('comment-id');
-                $.ajax('/api/comment/' + id, {
-                    method: 'DELETE',
-                    success: () => $panel.parent().remove(),
-                });
-            });
-
-            $('#comments').on('click', '.comment-reply', function(e) {
-                var $this = $(this);
-                var $panel = $this.parent();
-                var $comment = $panel.parent();
-                var id = $panel.data('comment-id');
-
-                var $div = $('<div class="comment-reply-dialog">');
-                $div.append($('<textarea class="comment-reply-text"/>'))
-                    .append($('<button class="save">save</button>'))
-                    .append($('<button class="cancel">cancel</button>'));
-                $div.find('.save').click(() => {
-                    var text = $div.children('.comment-reply-text').val();
-                    if (text.length > 0) {
-                        make_comment($comment.children('.comment-children'), {text: text, reply_to: id});
-                        $div.remove();
-                    }
-                });
-                $div.find('.cancel').click(() => $div.remove());
-                $panel.append($div);
-            });
-        },
-    });
-});
-
-
-$(document).hashroute('/delete-poll/:id', (e) => {
-    $.ajax('/api/poll/' + e.params.id, {
-        method: 'DELETE',
-        success: () => visit(''),
-        error: () => visit(''),
-    });
-});
-
-
-$(document).hashroute('/finalize-poll/:id', (e) => {
-    $.ajax('/api/poll/' + e.params.id + '/finalize', {
-        method: 'POST',
-        success: () => visit('/poll/' + e.params.id),
-        error: () => visit('/poll/' + e.params.id),
-    });
+    $.ajax('/api/poll/' + e.params.id, {success: poll => render_poll(poll)});
 });
 
 

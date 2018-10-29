@@ -1,9 +1,11 @@
 <div id='poll'>
   {{#editable}}
   <div id='poll-panel'>
-    <a href='#/edit-poll/{{ id }}'>edit</a>
-    {{^finalized}}<a href='#/finalize-poll/{{ id }}'>finalize</a>{{/finalized}}
-    <a href='#/delete-poll/{{ id }}'>delete</a>
+    {{^finalized}}
+        <a href='#/edit-poll/{{ id }}'>edit</a>
+        <a id='finalize-poll'>finalize</a>
+    {{/finalized}}
+    <a id='delete-poll'>delete</a>
   </div>
   {{/editable}}
 

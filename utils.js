@@ -27,16 +27,11 @@ const error_messages = {
 };
 
 
-function error_json(code) {
-    return {
+function error(res, code, status) {
+    res.status(status || 400).json({
         code:  code,
         error: error_messages[code],
-    };
-}
-
-
-function error(res, code) {
-    res.status(400).json(error_json(code));
+    });
 }
 
 
@@ -76,5 +71,4 @@ module.exports = {
     polls_created_by_user,
     polls_participated_by_user,
     error_codes,
-    error_json,
 };

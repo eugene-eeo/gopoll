@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Poll = require('../models/poll');
 const polls = require('../db').polls;
 const schema = require('../schema');
-const { error_json, error_codes, error, needs_auth, get_user } = require('../utils');
+const { error_codes, error, needs_auth, get_user } = require('../utils');
 
 
 router.post('/', needs_auth,
@@ -28,9 +28,7 @@ router.get('/:id', (req, res) => {
     const user = get_user(req);
     const poll = polls[req.params.id];
     if (!poll) {
-        return res
-            .status(404)
-            .json(error_json(error_codes.POLL_NOT_FOUND));
+        return error(res, error_codes.POLL_NOT_FOUND, 404);
     }
     res.json(poll.to_json_with_details(user));
 });
@@ -40,10 +38,10 @@ function check_poll_same_user(req, res, next) {
     const poll = polls[req.params.id];
     const user = get_user(req);
     if (!poll) {
-        return res.status(404).json(error_json(error_codes.POLL_NOT_FOUND));
+        return error(res, error_codes.POLL_NOT_FOUND, 404);
     }
     if (user !== poll.user) {
-        return res.status(403).json(error_json(error_codes.POLL_DIFFERENT_USER));
+        return error(res, error_codes.POLL_DIFFERENT_USER, 403);
     }
     next();
 }
@@ -56,6 +54,9 @@ router.put('/:id',
     (req, res) => {
         const poll = polls[req.params.id];
         const user = get_user(req);
+        if (poll.finalized) {
+            return error(res, error_codes.POLL_FINALIZED);
+        }
         poll.name = req.body.name;
         poll.description = req.body.description;
         poll.options = req.body.options.map(opt => {
@@ -80,8 +81,10 @@ router.post('/:id/finalize',
     needs_auth,
     check_poll_same_user,
     (req, res) => {
-        polls[req.params.id].finalize();
-        res.json({});
+        const user = get_user(req);
+        const poll = polls[req.params.id];
+        poll.finalize();
+        res.json(poll.to_json_with_details(user));
     });
 
 
@@ -107,7 +110,7 @@ router.post('/:id/vote/:opt',
             return;
         }
         option.users.push(user);
-        res.json({});
+        res.json(poll.to_json_with_details(user));
     });
 
 
@@ -133,7 +136,7 @@ router.delete('/:id/vote/:opt',
             return;
         }
         option.users.splice(i, 1);
-        res.json({});
+        res.json(poll.to_json_with_details(user));
     });
 
 
