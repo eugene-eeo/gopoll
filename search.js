@@ -21,13 +21,21 @@ function jaccard(a, b) {
 }
 
 
+function get(obj, selector) {
+    selector.split('.').forEach(a => {
+        obj = obj[a];
+    })
+    return obj;
+}
+
+
 function search(haystack, attrs, query) {
     const a = ngrams(query);
     const h = [];
     haystack.forEach(x => {
         let score = 0;
         attrs.forEach((attr) => {
-            score += jaccard(a, ngrams(x[attr]))
+            score += jaccard(a, ngrams(get(x, attr)));
         });
         if (score > 0.25) {
             h.push([score, x]);

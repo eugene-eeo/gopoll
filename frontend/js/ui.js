@@ -380,21 +380,24 @@ $(document).hashroute('/search', () => {
     $('#search-form').submit((evt) => {
         evt.preventDefault();
         let q = $('input[name=q]').val();
-        let include_users = $('input[name=include_users]').prop('checked');
-        let include_polls = $('input[name=include_polls]').prop('checked');
-        if (q.length === 0 || (!include_users && !include_polls)) {
+        let include_users    = $('input[name=include_users]').prop('checked');
+        let include_polls    = $('input[name=include_polls]').prop('checked');
+        let include_comments = $('input[name=include_comments]').prop('checked');
+        if (q.length === 0 || !(include_users || include_polls || include_comments)) {
             return;
         }
         $.ajax('/api/search', {
             method: 'POST',
-            data: JSON.stringify({q: q, include_users: include_users, include_polls: include_polls}),
+            data: JSON.stringify({
+                q: q,
+                include_users: include_users,
+                include_polls: include_polls,
+                include_comments: include_comments,
+            }),
             success: (data) => {
                 data.polls.forEach(trim_description);
-                $('#results').html(Mustache.render(Templates.search_results, {
-                    has_results: (data.polls.length > 0) || (data.users.length > 0),
-                    users: data.users,
-                    polls: data.polls,
-                }));
+                data.has_results = (data.polls.length > 0) || (data.users.length > 0) || (data.comments.length > 0);
+                $('#results').html(Mustache.render(Templates.search_results, data));
             },
         })
     });

@@ -3,6 +3,7 @@
     <input name='q' type='text' placeholder='Search...' />
     <input name='include_users' type='checkbox' checked/> Include users<br/>
     <input name='include_polls' type='checkbox' checked/> Include polls<br/>
+    <input name='include_comments' type='checkbox' checked/> Include comments<br/>
     <input type='submit' value='search' />
   </form>
   <div id='results'></div>

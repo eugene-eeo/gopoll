@@ -99,15 +99,11 @@ router.post('/:id/vote/:opt',
         }
         const option = poll.find_option(+req.params.opt);
         if (!option) {
-            res.status(404);
-            res.end();
-            return;
+            return error(res, error_codes.OPTION_NOT_FOUND, 404);
         }
         // non multi poll and we can find another voted option
         if (!poll.can_vote(user)) {
-            res.status(401);
-            res.end();
-            return;
+            return error(res, error_codes.CANNOT_VOTE, 401);
         }
         option.users.push(user);
         res.json(poll.to_json_with_details(user));
@@ -120,20 +116,15 @@ router.delete('/:id/vote/:opt',
         const user = get_user(req);
         const poll = polls[req.params.id];
         if (poll.finalized) {
-            error(res, error_codes.POLL_FINALIZED);
-            return;
+            return error(res, error_codes.POLL_FINALIZED);
         }
         const option = poll.find_option(+req.params.opt);
         if (!option) {
-            res.status(404);
-            res.end();
-            return;
+            return error(res, error_codes.OPTION_NOT_FOUND, 404);
         }
         const i = option.users.indexOf(user);
         if (i === -1) {
-            res.status(404);
-            res.end();
-            return;
+            return error(res, error_codes.HASNT_VOTED, 404);
         }
         option.users.splice(i, 1);
         res.json(poll.to_json_with_details(user));

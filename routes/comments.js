@@ -25,6 +25,7 @@ router.post('/',
             id: uuid,
             text: req.body.text,
             user: get_user(req),
+            poll: reply_to.poll || reply_to,
         });
         reply_to.comments.push(comment);
         comment.parent = reply_to;
@@ -39,8 +40,7 @@ router.put('/:id',
     (req, res) => {
         const comment = comments[req.params.id];
         if (!comment) {
-            res.status(404).end();
-            return;
+            return error(res, error_codes.COMMENT_NOT_FOUND, 404);
         }
         comment.text = req.body.text;
         res.json(comment.to_json());
@@ -52,8 +52,7 @@ router.delete('/:id',
     (req, res) => {
         const comment = comments[req.params.id];
         if (!comment) {
-            res.status(404).end();
-            return;
+            return error(res, error_codes.COMMENT_NOT_FOUND, 404);
         }
         const i = comment.parent.comments.indexOf(comment);
         comment.parent.comments.splice(i, 1);

@@ -95,11 +95,12 @@ const update_comment_schema = {
 // search
 const search_schema = {
     type: 'object',
-    required: ['q', 'include_users', 'include_polls'],
+    required: ['q', 'include_users', 'include_polls', 'include_comments'],
     properties: {
         q: {type: 'string', minLength: 1},
-        include_users: {type: 'boolean'},
-        include_polls: {type: 'boolean'},
+        include_users:    {type: 'boolean'},
+        include_polls:    {type: 'boolean'},
+        include_comments: {type: 'boolean'},
     },
 };
 

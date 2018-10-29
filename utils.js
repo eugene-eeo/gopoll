@@ -10,7 +10,11 @@ const error_codes = {
     POLL_FINALIZED:      'POLL_FINALIZED',
     USER_NOT_FOUND:      'USER_NOT_FOUND',
     POLL_NOT_FOUND:      'POLL_NOT_FOUND',
+    OPTION_NOT_FOUND:    'OPTION_NOT_FOUND',
+    COMMENT_NOT_FOUND:   'COMMENT_NOT_FOUND',
     POLL_DIFFERENT_USER: 'POLL_DIFFERENT_USER',
+    CANNOT_VOTE:         'CANNOT_VOTE',
+    HASNT_VOTED:         'HASNT_VOTED',
 };
 
 
@@ -23,7 +27,11 @@ const error_messages = {
     POLL_FINALIZED:      'Poll finalized.',
     USER_NOT_FOUND:      'User not found.',
     POLL_NOT_FOUND:      'Poll not found.',
+    OPTION_NOT_FOUND:    'Option not found.',
+    COMMENT_NOT_FOUND:   'Comment not found.',
     POLL_DIFFERENT_USER: 'Not allowed to modify poll.',
+    CANNOT_VOTE:         'Cannot cast vote.',
+    HASNT_VOTED:         'Hasn\'t voted.',
 };
 
 
