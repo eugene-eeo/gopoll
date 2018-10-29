@@ -1,0 +1,11 @@
+<form id="settings">
+  <h2>Settings</h2>
+  {{#saved}}
+  <span id='settings-saved'>Your changes have been saved.</span>
+  {{/saved}}
+  Name: <input type='text' name='forename' placeholder='First Name' value='{{ forename }}'/><input type='text' name='surname' placeholder='Last Name' value='{{ surname }}'/><br/>
+  Username: <input type='text' name='username' value='{{ username }}'/><br/>
+  Password: <input type='password' name='password'/><br/>
+  Password (Repeat): <input type='password' name='password-repeat'/><br/>
+  <input type="submit" value="save">
+</form>

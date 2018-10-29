@@ -1,6 +1,5 @@
 <div id='create-poll'>
   <h2>Create Poll</h2>
-  <div id='errors'></div>
   Name: <input type='text' name='name'/><br/>
   Description:<br/>
   <textarea name='description'/><br/>

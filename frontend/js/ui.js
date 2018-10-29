@@ -1,7 +1,20 @@
 window.current_user = null;
 window.done = false;
 
-$.ajaxSetup({ contentType: "application/json; charset=utf-8", dataType: "json" });
+$.ajaxSetup({
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    error: (r) => {
+        console.log(r);
+        $('#errors').html('');
+        if (!r.responseJSON) return;
+        if (r.responseJSON.code === 'NEEDS_AUTH') {
+            visit('/login');
+            return;
+        }
+        $('#errors').append($('<span class="error">' + r.responseJSON.error + '</span>'))
+    }
+});
 
 
 function visit(x) {
@@ -19,6 +32,8 @@ function trim_description(poll) {
 $.hashroute('middleware', function() {
     if (window.done) return this.next();
     $.ajax('/api/auth/me', {
+        // here we explicitly ignore error, since we don't want to force login.
+        error:   () => {},
         success: (data) => { window.current_user = data; },
         complete: () => {
             window.done = true;
@@ -31,6 +46,8 @@ $.hashroute('middleware', function() {
 // inject navbar
 $.hashroute('middleware', function() {
     $('nav').html(Mustache.render(Templates.navbar, {logged_in: !!window.current_user}));
+    // clear errors
+    $('#errors').html('');
     this.next();
 });
 
@@ -64,19 +81,17 @@ $(document).hashroute('/create-poll', () => {
                 multi: multi,
             }),
             success: (poll) => visit('/poll/' + poll.id),
-            error: () => $('#errors').append($('<span>Cannot create poll</span>')),
         });
     });
 });
 
 
 $(document).hashroute('/user/:username', (e) => {
-    if (e.params.username === window.current_user.username) {
+    if (window.current_user && e.params.username === window.current_user.username) {
         return visit('/');
     }
     $.ajax('/api/people/' + e.params.username, {
         success: (data) => $('#content').html(Mustache.render(Templates.user, data)),
-        error: () => $('#content').html('User not found.'),
     });
 });
 
@@ -129,10 +144,6 @@ $(document).hashroute('/register', () => {
                 password: password,
             }),
             success: () => visit('login'),
-            error: (r) => {
-                var err = r.responseJSON ? r.responseJSON.error : "Something went wrong.";
-                $errors.append($("<span class='error'>" + err + "</span>"));
-            },
         });
     });
 });
@@ -164,23 +175,18 @@ $(document).hashroute('/login', () => {
                 window.current_user = user;
                 visit('');
             },
-            error: (r) => {
-                var json = r.responseJSON;
-                json && $errors.html("<span class='error'>" + json.error + "</span>");
-            },
         });
     });
 });
 
 
 $(document).hashroute('/logout', () => {
-    $.ajax('/api/logout', {
+    $.ajax('/api/auth/logout', {
         method: 'POST',
         success: () => {
             window.current_user = null;
             visit('');
         },
-        // TODO: handle error
     });
 });
 
@@ -193,18 +199,10 @@ $(document).hashroute('/', () => {
             data.polls_participated.forEach(trim_description);
             $('#content').html(Mustache.render(Templates.dashboard, data));
         },
-        error: () => visit('/login'),
     });
 });
 
 $(document).hashroute('/poll/:id', function reload(e) {
-    function dump_in_errors(r) {
-        if (r.responseJSON) {
-            var err = r.responseJSON.error;
-            $('#errors').html($("<span class='error'>"+err+"</span>"));
-        }
-    }
-
     function make_comment($parent, json, done) {
         $.ajax('/api/comment/', {
             method: 'POST',
@@ -213,7 +211,6 @@ $(document).hashroute('/poll/:id', function reload(e) {
                 render_comment($parent, data);
                 done && done();
             },
-            error: dump_in_errors,
         });
     }
 
@@ -253,7 +250,6 @@ $(document).hashroute('/poll/:id', function reload(e) {
                 $.ajax('/api/poll/' + poll.id + '/vote/' + id, {
                     method: 'POST',
                     success: function() { reload(e); },
-                    error: dump_in_errors,
                 });
             });
 
@@ -263,7 +259,6 @@ $(document).hashroute('/poll/:id', function reload(e) {
                 $.ajax('/api/poll/' + poll.id + '/vote/' + id, {
                     method: 'DELETE',
                     success: function() { reload(e); },
-                    error: dump_in_errors,
                 });
             });
 
@@ -274,7 +269,6 @@ $(document).hashroute('/poll/:id', function reload(e) {
                 $.ajax('/api/comment/' + id, {
                     method: 'DELETE',
                     success: () => $panel.parent().remove(),
-                    error: dump_in_errors,
                 });
             });
 
@@ -299,7 +293,6 @@ $(document).hashroute('/poll/:id', function reload(e) {
                 $panel.append($div);
             });
         },
-        error: () => $('#content').html('Poll not found.'),
     });
 });
 
@@ -379,7 +372,6 @@ $(document).hashroute('/edit-poll/:id', (e) => {
                     method: 'PUT',
                     data: JSON.stringify(json),
                     success: () => visit('/poll/' + poll.id),
-                    error:   (e) => console.log(e),
                 });
             });
         },
@@ -410,4 +402,37 @@ $(document).hashroute('/search', () => {
             },
         })
     });
+});
+
+
+$(document).hashroute('/settings', () => {
+    var reload = (user) => {
+        $('#content').html(Mustache.render(Templates.settings, user));
+        $('#settings').submit((evt) => {
+            evt.preventDefault();
+            var data = {
+                username: $('[name=username]').val(),
+                forename: $('[name=forename]').val(),
+                surname: $('[name=surname]').val(),
+            };
+            var password        = $('[name=password]').val();
+            var password_repeat = $('[name=password-repeat]').val();
+            if (password) {
+                if (password !== password_repeat) {
+                    $('#errors').append($('<span class="error">Passwords do not match.</span>'));
+                    return;
+                }
+                data.password = password;
+            }
+            $.ajax('/api/auth/settings', {
+                method: 'POST',
+                data: JSON.stringify(data),
+                success: (data) => {
+                    data.saved = true;
+                    reload(data);
+                },
+            });
+        })
+    };
+    $.ajax('/api/auth/me', {success: reload});
 });

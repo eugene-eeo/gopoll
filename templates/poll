@@ -1,5 +1,4 @@
 <div id='poll'>
-  <div id='errors'></div>
   {{#editable}}
   <div id='poll-panel'>
     <a href='#/edit-poll/{{ id }}'>edit</a>

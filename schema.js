@@ -17,6 +17,19 @@ const create_user_schema = {
     },
 };
 
+const change_user_settings_schema = {
+    type: 'object',
+    properties: {
+        username: {
+            type: 'string',
+            pattern: '[a-zA-Z][A-Za-z0-9]+'
+        },
+        password: {type: 'string', minLength: 1},
+        forename: {type: 'string', minLength: 1},
+        surname:  {type: 'string', minLength: 1},
+    },
+};
+
 const login_schema = {
     type: 'object',
     required: ['username', 'password'],

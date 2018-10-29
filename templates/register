@@ -3,8 +3,6 @@
   <p>
     Registration is free and only takes a few seconds.
   <p>
-  <div id="errors">
-  </div>
   Name: <input type='text' name='forename' placeholder='First Name'/><input type='text' name='surname' placeholder='Last Name'/><br/>
   Username: <input type='text' name='username'/><br/>
   Password: <input type='password' name='password'/><br/>

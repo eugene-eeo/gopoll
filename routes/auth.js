@@ -4,6 +4,7 @@ const { users, tokens } = require('../db');
 const schema = require('../schema');
 const {
     error,
+    error_codes,
     needs_auth,
     polls_created_by_user,
     polls_participated_by_user,
@@ -13,14 +14,14 @@ const {
 
 router.post('/login', schema.validate({body: schema.login_schema}), (req, res) => {
     if (tokens[req.signedCookies.token]) {
-        return error(res, 'already logged in');
+        return error(res, error_codes.ALREADY_LOGGED_IN);
     }
 
     const { username, password } = req.body;
     const user = users[username];
 
-    if (!users.hasOwnProperty(username)) return error(res, "invalid username");
-    if (user.password !== password)      return error(res, "invalid password");
+    if (!users.hasOwnProperty(username)) return error(res, error_codes.INVALID_USERNAME);
+    if (user.password !== password)      return error(res, error_codes.INVALID_PASSWORD);
 
     const token = uuidv4();
     tokens[token] = user;
@@ -39,6 +40,19 @@ router.get('/me', needs_auth, (req, res) => {
         ...user.to_json(),
     });
 });
+
+
+router.post('/settings',
+    needs_auth,
+    schema.validate({body: schema.create_user_schema}),
+    (req, res) => {
+        const user = get_user(req);
+        if (req.body.username) user.username = req.body.username;
+        if (req.body.password) user.password = req.body.password;
+        if (req.body.forename) user.forename = req.body.forename;
+        if (req.body.surname)  user.surname  = req.body.surname;
+        res.json(user.to_json());
+    });
 
 
 router.post('/logout', needs_auth, (req, res) => {

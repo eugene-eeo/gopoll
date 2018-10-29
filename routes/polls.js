@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Poll = require('../models/poll');
 const polls = require('../db').polls;
 const schema = require('../schema');
-const { error, needs_auth, get_user } = require('../utils');
+const { error_json, error_codes, error, needs_auth, get_user } = require('../utils');
 
 
 router.post('/', needs_auth,
@@ -28,9 +28,9 @@ router.get('/:id', (req, res) => {
     const user = get_user(req);
     const poll = polls[req.params.id];
     if (!poll) {
-        res.status(404);
-        res.end();
-        return;
+        return res
+            .status(404)
+            .json(error_json(error_codes.POLL_NOT_FOUND));
     }
     res.json(poll.to_json_with_details(user));
 });
@@ -40,12 +40,10 @@ function check_poll_same_user(req, res, next) {
     const poll = polls[req.params.id];
     const user = get_user(req);
     if (!poll) {
-        res.status(404).end();
-        return;
+        return res.status(404).json(error_json(error_codes.POLL_NOT_FOUND));
     }
     if (user !== poll.user) {
-        res.status(403).end();
-        return;
+        return res.status(403).json(error_json(error_codes.POLL_DIFFERENT_USER));
     }
     next();
 }
@@ -93,7 +91,7 @@ router.post('/:id/vote/:opt',
         const user = get_user(req);
         const poll = polls[req.params.id];
         if (poll.finalized) {
-            error(res, "Cannot cast vote - poll finalized.");
+            error(res, error_codes.POLL_FINALIZED);
             return;
         }
         const option = poll.find_option(+req.params.opt);
@@ -119,7 +117,7 @@ router.delete('/:id/vote/:opt',
         const user = get_user(req);
         const poll = polls[req.params.id];
         if (poll.finalized) {
-            error(res, "Cannot delete vote - poll finalized.");
+            error(res, error_codes.POLL_FINALIZED);
             return;
         }
         const option = poll.find_option(+req.params.opt);

@@ -1,8 +1,42 @@
 const { tokens, polls } = require('./db');
 
 
-function error(res, message) {
-    res.status(400).json({error: message});
+const error_codes = {
+    NEEDS_AUTH:          'NEEDS_AUTH',
+    NEEDS_REPLY:         'NEEDS_REPLY',
+    ALREADY_LOGGED_IN:   'ALREADY_LOGGED_IN',
+    INVALID_USERNAME:    'INVALID_USERNAME',
+    INVALID_PASSWORD:    'INVALID_PASSWORD',
+    POLL_FINALIZED:      'POLL_FINALIZED',
+    USER_NOT_FOUND:      'USER_NOT_FOUND',
+    POLL_NOT_FOUND:      'POLL_NOT_FOUND',
+    POLL_DIFFERENT_USER: 'POLL_DIFFERENT_USER',
+};
+
+
+const error_messages = {
+    NEEDS_AUTH:          'Login required.',
+    NEEDS_REPLY:         'Needs a reply_to or poll_id.',
+    ALREADY_LOGGED_IN:   'Already logged in.',
+    INVALID_USERNAME:    'Invalid username.',
+    INVALID_PASSWORD:    'Invalid password.',
+    POLL_FINALIZED:      'Poll finalized.',
+    USER_NOT_FOUND:      'User not found.',
+    POLL_NOT_FOUND:      'Poll not found.',
+    POLL_DIFFERENT_USER: 'Not allowed to modify poll.',
+};
+
+
+function error_json(code) {
+    return {
+        code:  code,
+        error: error_messages[code],
+    };
+}
+
+
+function error(res, code) {
+    res.status(400).json(error_json(code));
 }
 
 
@@ -17,7 +51,7 @@ function needs_auth(req, res, next) {
         return;
     }
     res.clearCookie('token');
-    error(res, "login required");
+    error(res, error_codes.NEEDS_AUTH);
 }
 
 
@@ -41,4 +75,6 @@ module.exports = {
     needs_auth,
     polls_created_by_user,
     polls_participated_by_user,
+    error_codes,
+    error_json,
 };

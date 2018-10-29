@@ -1,7 +1,5 @@
 <form id="login">
   <h2>Log In</h2>
-  <div id="errors">
-  </div>
   Username: <input type='text' name='username'/><br/>
   Password: <input type='password' name='password'/><br/>
   <input type="submit" value="log in">
