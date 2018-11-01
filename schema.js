@@ -45,7 +45,7 @@ const create_poll_schema = {
     required: ['name', 'description', 'multi'],
     properties: {
         name:        {type: 'string', minLength: 1},
-        description: {type: 'string', minLength: 1},
+        description: {type: 'string'},
         multi:       {type: 'boolean'},
     },
 };

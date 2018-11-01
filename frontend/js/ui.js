@@ -68,10 +68,6 @@ $(document).hashroute('/create-poll', () => {
             ok = false;
             $('#errors').append($('<span>Name cannot be empty</span>'));
         }
-        if (desc.length === 0) {
-            ok = false;
-            $('#errors').append($('<span>Description cannot be empty</span>'));
-        }
         if (!ok) return;
         $.ajax('/api/poll', {
             method: 'POST',
