@@ -1,54 +1,80 @@
-<div id='poll'>
-  {{#editable}}
-  <div id='poll-panel'>
-    {{^finalized}}
-        <a href='#/edit-poll/{{ id }}'>edit</a>
-        <a id='finalize-poll'>finalize</a>
+<div id='poll' class='ui stackable grid'>
+  <div class='two wide column'></div>
+  <div class='eight wide column'>
+    <div class='ui card' style='width:100%;'>
+      <div class='content'>
+        <div class='header'>{{ name }}</div>
+        <div class='meta'>{{ user.forename }} {{ user.surname }} (<a href='#/user/{{user.username}}'>@{{ user.username }}</a>)</div>
+        <div class='description'>
+          <p>{{ description }}</p>
+        </div>
+      </div>
+    </div>
+    {{#finalized}}
+    <div class="ui warning message">
+      <div class="header">
+        Poll finalized.
+      </div>
+      <p>The owner has finalized the poll. You may not vote, but are still able to leave comments.</p>
+    </div>
     {{/finalized}}
-    <a id='delete-poll'>delete</a>
-  </div>
-  {{/editable}}
-
-  <h2 class='poll-title'>{{ name }}</h2>
-  <span class='meta'>{{ user.forename }} {{ user.surname }} (<a href='#/user/{{user.username}}'>@{{ user.username }}</a>)</span>
-  <p>{{ description }}</p>
-
-  <hr />
-  <div id='votes'>
-  {{^finalized}}
-    {{#votes}}
-      <div class='vote'>
-        {{^voted}}
-          <span class='poll-option not-voted'>{{ name }} ({{ num }})</span>
-          <a class='add-vote' data-id='{{ id }}'>vote</a>
-        {{/voted}}
-        {{#voted}}
-          <span class='poll-option voted'>{{ name }} ({{ num }})</span>
-          <a class='add-unvote' data-id='{{ id }}'>unvote</a>
-        {{/voted}}
+    <form class='ui segmented form' id='comment-box'>
+      <h4 class='ui dividing header'>Add comment</h4>
+      <div class='field'>
+        <textarea name='text' style='height: 2em;'/>
       </div>
-    {{/votes}}
-    {{^votes}}<span class='gray'>no vote options</span>{{/votes}}
-  {{/finalized}}
-  {{#finalized}}
-    {{#votes}}
-      <div class='vote finalized'>
-        <span class='poll-option{{^voted}} not-voted{{/voted}}{{#voted}} voted{{/voted}}'>{{ name }} ({{ num }})</span>
+      <button class='ui button comment-box-submit'>Reply</button>
+    </form>
+    <div class='ui comments'>
+      <h3 class='ui dividing header'>Comments</h3>
+      <div id='comments'>
       </div>
-    {{/votes}}
-    {{^votes}}<span class='gray'>no vote options</span>{{/votes}}
-  {{/finalized}}
+    </div>
   </div>
-
-  <hr />
-  {{#finalized}}
-  <p id='poll-finalized'>Poll finalized.</p>
-  <hr />
-  {{/finalized}}
-  <form id='comment-box'>
-      <textarea name='text'/>
-      <button class='comment-box-submit'>Reply</button>
-  </form>
-
-  <div id='comments'></div>
+  <div class='four wide column'>
+    <h4 class='ui header'>Options</h4>
+      <div class='ui vertical menu' style='width: 100%;' id='votes'>
+      {{^finalized}}
+        {{#votes}}
+          {{^voted}}
+          <div class='vote item add-vote not-voted' data-id='{{ id }}'>
+            {{ name }}
+            <div class='ui label'>{{ num }}</div>
+          </div>
+          {{/voted}}
+          {{#voted}}
+          <div class='vote item add-unvote voted' data-id='{{ id }}'>
+            {{ name }}
+            <div class='ui teal label'>{{ num }}</div>
+          </div>
+          {{/voted}}
+        {{/votes}}
+      {{/finalized}}
+      {{#finalized}}
+        {{#votes}}
+        <div class='vote item{{^voted}} not-voted{{/voted}}{{#voted}} voted{{/voted}}'>
+          {{ name }}
+          <div class='ui {{#voted}}teal{{/voted}} label'>{{ num }}</div>
+        </div>
+        {{/votes}}
+      {{/finalized}}
+      {{^votes}}<span class='gray'>no vote options</span>{{/votes}}
+      </div>
+    </h4>
+    {{#editable}}
+      {{^finalized}}
+      <div class='ui fluid three item menu' style='width: 100%;'>
+        <a class='item' href='#/edit-poll/{{ id }}'><i class='ui icon edit'></i> Edit</a>
+        <a class='item' id='finalize-poll'><i class='ui icon save'></i> Finalize</a>
+        <a class='item' id='delete-poll'><i class='ui icon delete'></i> Delete</a>
+      </div>
+      {{/finalized}}
+      {{#finalized}}
+      <div class='ui fluid one item menu' style='width: 100%;'>
+        <a class='item' id='delete-poll'><i class='ui icon delete'></i> Delete</a>
+      </div>
+      {{/finalized}}
+    {{/editable}}
+  </div>
+  <div class='two wide column'></div>
 </div>

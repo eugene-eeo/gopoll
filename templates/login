@@ -1,7 +1,19 @@
-<form id="login">
-  <h2>Log In</h2>
-  Username: <input type='text' name='username'/><br/>
-  Password: <input type='password' name='password'/><br/>
-  <input type="submit" value="log in">
-  <a id='register' href='#/register'><input type='button' value='register' /></a>
-</form>
+<div class='ui stackable three column grid'>
+  <div class='column'></div>
+  <div class='column'>
+    <form id="login" class='ui segmented form'>
+      <h2 class='ui dividing header'>Log in</h2>
+      <div class='field'>
+        <label>Username:</label>
+        <input type='text' name='username'/>
+      </div>
+      <div class='field'>
+        <label>Password:</label>
+        <input type='text' name='password'/>
+      </div>
+      <input class='ui button' type="submit" value="Log in">
+      <a id='register' href='#/register'><input type='button' value='register' /></a>
+    </form>
+  </div>
+  <div class='column'></div>
+</div>

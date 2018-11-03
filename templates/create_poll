@@ -1,8 +1,27 @@
-<div id='create-poll'>
-  <h2>Create Poll</h2>
-  Name: <input type='text' name='name'/><br/>
-  Description:<br/>
-  <textarea name='description'/><br/>
-  <input type='checkbox' name='multi'> Multi (users can select multiple options)
-  <button id='create'>create</button>
+<div class='ui stackable grid'>
+  <div class='three wide column'></div>
+  <div class='ten wide column' id='create-poll'>
+    <form id='create-poll-form' class='ui form segment error' style='width: 100%'>
+      <h2 class='ui dividing header'>Create Poll</h2>
+      <div class='field'>
+        <label>Name:</label>
+        <input type='text' name='name'/>
+      </div>
+      <div class='field'>
+        <label>Description:</label>
+        <textarea name='description'/>
+      </div>
+      <div class="ui segment">
+        <div class="field">
+          <div class="ui toggle checkbox">
+            <input type="checkbox" name="multi">
+            <label>Allow users to select multiple options</label>
+          </div>
+        </div>
+      </div>
+      <input class='ui button' type='submit' value='Create'/>
+      <div class='ui error message'></div>
+    </form>
+  </div>
+  <div class='three wide column'></div>
 </div>

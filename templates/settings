@@ -1,11 +1,39 @@
-<form id="settings">
-  <h2>Settings</h2>
-  {{#saved}}
-  <span id='settings-saved'>Your changes have been saved.</span>
-  {{/saved}}
-  Name: <input type='text' name='forename' placeholder='First Name' value='{{ forename }}'/><input type='text' name='surname' placeholder='Last Name' value='{{ surname }}'/><br/>
-  Username: <input type='text' name='username' value='{{ username }}'/><br/>
-  Password: <input type='password' name='password'/><br/>
-  Password (Repeat): <input type='password' name='password-repeat'/><br/>
-  <input type="submit" value="save">
-</form>
+<div class='ui stackable three column grid'>
+  <div class='column'></div>
+  <div class='column'>
+    <form id="settings" class='ui form segment error'>
+      <h2 class='ui dividing header'>Settings</h2>
+      {{#saved}}
+      <div class='ui message'><p>Your changes have been saved.</p></div>
+      {{/saved}}
+      <div class='field'>
+        <label>Name</label>
+        <div class='two fields'>
+          <div class='field'>
+            <input type='text' name='forename' placeholder='First Name' value='{{forename}}'/>
+          </div>
+          <div class='field'>
+            <input type='text' name='surname' placeholder='Last Name' value='{{surname}}'/>
+          </div>
+        </div>
+      </div>
+      <div class='field'>
+        <label>Username</label>
+        <input type='text' name='username' placeholder='Username' value='{{username}}'/>
+      </div>
+      <div class='field'>
+        <label>Password</label>
+        <div class='two fields'>
+          <div class='field'>
+            <input type='password' name='password' placeholder='Password'/>
+          </div>
+          <div class='field'>
+            <input type='password' name='password-repeat' placeholder='Password'/>
+          </div>
+        </div>
+      </div>
+      <input class='ui button' type="submit" value="Save"/>
+    </form>
+  </div>
+  <div class='column'></div>
+</div>

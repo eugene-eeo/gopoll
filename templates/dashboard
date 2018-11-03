@@ -1,19 +1,36 @@
-<div class='user'>
-  <span class='name'>{{ forename }} {{ surname }} (@{{username}})</span>
+<div class='ui stackable grid'>
+  <div class='two wide column'></div>
+  <div class='three wide column'>
+    <div class='ui card' style='width: 100%'>
+      <div class='content'>
+        <span class='header'>{{ forename }} {{ surname }}</span>
+        <div class='meta'>
+          <span class='date'>@{{ username }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class='four wide column'>
+    <h3 class='ui dividing header'>My Polls</h3>
+    {{#polls_created}}
+    <div class='ui card' style='width: 100%'>
+      <div class='content'>
+        <span class='header'><a href='#/poll/{{ id }}'>{{ name }}</a></span>
+        <span class='meta'>{{ description }}</span>
+      </div>
+    </div>
+    {{/polls_created}}
+  </div>
+  <div class='four wide column'>
+    <h3 class='ui dividing header'>Participated Polls</h3>
+    {{#polls_participated}}
+    <div class='ui card' style='width: 100%'>
+      <div class='content'>
+        <span class='header'><a href='#/poll/{{ id }}'>{{ name }}</a></span>
+        <span class='meta'>{{ description }}</span>
+      </div>
+    </div>
+    {{/polls_participated}}
+  </div>
+  <div class='two wide column'></div>
 </div>
-
-<h3>My Polls</h3>
-{{#polls_created}}
-  <div class='poll-tiny'>
-    <span class='name'><a href='#/poll/{{ id }}'>{{ name }}</a></span>
-    <span class='description'>{{ description }}</span>
-  </div>
-{{/polls_created}}
-
-<h3>Participated Polls</h3>
-{{#polls_participated}}
-  <div class='poll-tiny'>
-    <span class='name'><a href='#/poll/{{ id }}'>{{ name }}</a></span>
-    <span class='description'>{{ description }}</span>
-  </div>
-{{/polls_participated}}

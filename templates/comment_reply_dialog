@@ -1,0 +1,7 @@
+<form class='ui form'>
+  <div class='field'>
+    <textarea name='comment-reply-text' placeholder='Comment...'/>
+  </div>
+  <div class='ui button comment-reply-save'>Save</div>
+  <div class='ui button comment-reply-cancel'>Cancel</div>
+</form>

@@ -1,11 +1,33 @@
-<form id="register">
-  <h2>Register</h2>
-  <p>
-    Registration is free and only takes a few seconds.
-  <p>
-  Name: <input type='text' name='forename' placeholder='First Name'/><input type='text' name='surname' placeholder='Last Name'/><br/>
-  Username: <input type='text' name='username'/><br/>
-  Password: <input type='password' name='password'/><br/>
-  Password (Repeat): <input type='password' name='password-repeat'/><br/>
-  <input type="submit" value="register">
+<h2>Register</h2>
+<p>
+  Registration is free and only takes a few seconds.
+<p>
+<form class='ui form segment error' id="register">
+  <div class='field'>
+    <label>Name</label>
+    <div class='two fields'>
+      <div class='field'>
+        <input type='text' name='forename' placeholder='First Name'/>
+      </div>
+      <div class='field'>
+        <input type='text' name='surname' placeholder='Last Name'/>
+      </div>
+    </div>
+  </div>
+  <div class='field'>
+    <label>Username</label>
+    <input type='text' name='username' placeholder='Username'/>
+  </div>
+  <div class='field'>
+    <label>Password</label>
+    <div class='two fields'>
+      <div class='field'>
+        <input type='password' name='password' placeholder='Password'/>
+      </div>
+      <div class='field'>
+        <input type='password' name='password-repeat' placeholder='Password'/>
+      </div>
+    </div>
+  </div>
+  <input class='ui button' type="submit" value="Register"/>
 </form>

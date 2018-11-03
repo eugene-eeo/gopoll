@@ -15,6 +15,7 @@ const error_codes = {
     POLL_DIFFERENT_USER: 'POLL_DIFFERENT_USER',
     CANNOT_VOTE:         'CANNOT_VOTE',
     HASNT_VOTED:         'HASNT_VOTED',
+    USERNAME_TAKEN:      'USERNAME_TAKEN',
 };
 
 
@@ -32,6 +33,7 @@ const error_messages = {
     POLL_DIFFERENT_USER: 'Not allowed to modify poll.',
     CANNOT_VOTE:         'Cannot cast vote.',
     HASNT_VOTED:         'Hasn\'t voted.',
+    USERNAME_TAKEN:      'Username is already taken.',
 };
 
 

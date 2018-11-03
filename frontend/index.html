@@ -5,90 +5,22 @@
   <script src='/js/jquery.js'></script>
   <script src='/js/jquery.hashroute.js'></script>
   <script src='/js/mustache.js'></script>
-  <script src='/js/js-cookie.js'></script>
   <script src='/js/templates.js'></script>
+  <script src='/js/semantic.min.js'></script>
+  <link rel='stylesheet' href='/css/semantic.min.css'/>
   <style>
 body {
-  font-family: sans-serif;
-  font-size: 16px;
-  max-width: 50em;
-  margin: 1em auto;
-  padding: 0 1em;
-}
-
-#search input[name=q] { width: 100%; display: block; }
-
-a { color: blue; text-decoration: underline; }
-a:hover { cursor: pointer; }
-
-hr { border: none; background-color: #000; height: 1px; }
-button, input, textarea { font: inherit; }
-
-#edit-poll textarea { width: 100%; height: 10em; }
-
-#create-poll textarea { width: 100%; height: 10em; }
-#create-poll button { display: block; }
-
-#login #register { text-decoration: none; }
-#errors span { display: block; color: red; }
-
-h1    { float: left; font-size: 1.3em; margin: 0; text-decoration: none; color: #000; }
-nav   { float: right; }
-nav a { padding: 0em 0.5em; }
-.clearfix { clear: both; }
-
-#comment-box textarea { width: 100%; height: 4em; }
-
-textarea { resize: vertical; }
-
-#poll .voted { font-weight: bold; }
-#poll #poll-panel {
-  float: right;
-  display: inline-block;
-  text-align: center;
-}
-
-#poll .add-unvote, #poll .add-vote { float: right; display: block; }
-#poll .meta { font-size: 0.8em; }
-#poll .gray { color: #666; }
-
-.comment { padding: 0.5em 0 0.5em 0.5em; }
-.comment .comment { border-left: 5px solid #DDD; }
-.comment-text { padding: 0.3em 0; }
-.comment-user { font-size: 0.8em; }
-.comment-children { margin-top: 0.5em; }
-.comment-panel { font-size: 0.8em; }
-.comment-panel > button { background: none; border: 0; text-decoration: underline; padding: 0; margin: 0 0.2em 0 0; }
-
-.user { font-size: 1.5em; }
-.user .name { display: block; }
-
-.poll-tiny { border: 1px solid #000; padding: 0.5em; margin: 0.2em; }
-.poll-tiny .name { font-weight: bold; display: block; }
-.poll-tiny .description { colour: #333; display: block; }
-
-.poll-title { margin-bottom: 0; }
-
-.comment-reply-dialog textarea { width: 100%; }
-.comment-reply-dialog button { margin-right: 0.5em; }
-
-#poll #poll-finalized { text-align: center; font-style: italic; }
-
-.search-comment {
-  border: 1px solid #000;
   padding: 0.5em;
-  margin-bottom: 0.3em;
+  font-size: 16px;
 }
-
-.search-comment-poll { display: block; font-weight: bold; }
-.search-comment-user { font-size: 0.8em; }
+.vote:hover {
+  background-color: #DDD!important;
+}
+.voted { font-weight: bold!important; }
   </style>
 </head>
 <body>
-  <a href='/'><h1>gopoll</h1></a>
-  <nav></nav>
-  <div class='clearfix'>
-  <hr/>
+  <div id='navbar' class='ui menu'></div>
   <div id='errors'></div>
   <div id='content'></div>
   <script src='/js/ui.js'></script>
