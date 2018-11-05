@@ -316,16 +316,30 @@ $(document).hashroute('/poll/:id', (e) => {
         });
 
         $('#delete-poll').click((evt) => {
-            $.ajax('/api/poll/' + poll.id, {
-                method: 'DELETE',
-                success: () => visit(''),
+            var modal = $(Templates.delete_poll_modal);
+            $('#content').append(modal);
+            modal.modal('show');
+            modal.find('.close').click(e => { e.preventDefault(); modal.modal('hide'); modal.remove(); });
+            modal.find('#cancel').click(() => { modal.modal('hide'); modal.remove(); });
+            modal.find('#confirm').click(() => {
+                $.ajax('/api/poll/' + poll.id, {
+                    method: 'DELETE',
+                    success: () => visit(''),
+                });
             });
         });
 
         $('#finalize-poll').click((evt) => {
-            $.ajax('/api/poll/' + poll.id + '/finalize', {
-                method: 'POST',
-                success: (poll) => render_poll(poll),
+            var modal = $(Templates.finalize_poll_modal);
+            $('#content').append(modal);
+            modal.modal('show');
+            modal.find('.close').click(e => { e.preventDefault(); modal.modal('hide'); modal.remove(); });
+            modal.find('#cancel').click(() => { modal.modal('hide'); modal.remove(); });
+            modal.find('#confirm').click(() => {
+                $.ajax('/api/poll/' + poll.id + '/finalize', {
+                    method: 'POST',
+                    success: (poll) => render_poll(poll),
+                });
             });
         });
     }
@@ -335,18 +349,18 @@ $(document).hashroute('/poll/:id', (e) => {
 
 
 $(document).hashroute('/edit-poll/:id', (e) => {
+    if (!window.current_user) return visit('/login');
+
     function render_option($parent, option) {
         var $div = $(Mustache.render(Templates.poll_option, option));
-        $div.find('button.remove-option').click(() => $div.remove());
+        $div.find('.remove-option').click(() => $div.remove());
         $parent.append($div);
     }
 
     $.ajax('/api/poll/' + e.params.id, {
         success: (poll) => {
-            if (!window.current_user) return visit('/login');
             if (poll.user.username !== window.current_user.username) return visit('');
             $('#content').html(Mustache.render(Templates.edit_poll, poll));
-
             var $opts = $('#content').find('#edit-poll-options');
             var id = 1;
 

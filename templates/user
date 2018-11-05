@@ -1,11 +1,23 @@
-<div class='user'>
-  <span class='name'>{{ forename }} {{ surname }} (@{{username}})</span>
-</div>
-
-<h3>Polls Created</h3>
-{{#polls_created}}
-  <div class='poll-tiny'>
-    <span class='name'><a href='#/poll/{{ id }}'>{{ name }}</a></span>
-    <span class='description'>{{ description }}</span>
+<div class='ui stackable three column grid'>
+  <div class='column'></div>
+  <div class='column'>
+    <div class='ui card' style='width: 100%'>
+      <div class='content'>
+        <span class='header'>{{ forename }} {{ surname }}</span>
+        <div class='meta'>
+          <span class='date'>@{{ username }}</span>
+        </div>
+      </div>
+    </div>
+    <h3 class='ui dividing header'>Polls Created</h3>
+    {{#polls_created}}
+      <div class='ui card poll' style='width: 100%' onclick='visit("/poll/{{ id }}")'>
+        <div class='content'>
+          <span class='header'>{{ name }}</span>
+          <span class='meta'>{{ description }}</span>
+        </div>
+      </div>
+    {{/polls_created}}
   </div>
-{{/polls_created}}
+  <div class='column'></div>
+</div>

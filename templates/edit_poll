@@ -1,16 +1,30 @@
-<div id='edit-poll'>
-  <h3>Basics</h3>
-  Name: <input name='name' value='{{ name }}'><br/>
-  Description:
-  <textarea name='description'>{{ description }}</textarea>
-
-  <h3>Options</h3>
-  <div id='edit-poll-options'></div>
-  <div id='add-poll-options'>
-    <input id='add-poll-option-text' name='add-poll-option'></input><button id='add-option'>add</button>
+<div>
+  <div class='ui stackable grid'>
+    <div class='two wide column'></div>
+    <div class='eight wide column'>
+      <div id='edit-poll' class='ui form segmented'>
+        <h3 class='ui dividing header'>Edit Poll</h3>
+        <div class='field'><label>Name</label><input name='name' value='{{ name }}'></div>
+        <div class='field'><label>Description:</label><textarea name='description'>{{ description }}</textarea></div>
+      </div>
+    </div>
+    <div class='four wide column'>
+      <h3>Options</h3>
+      <div id='edit-poll-options' class='ui vertical menu' style='width: 100%'></div>
+      <div class='ui vertical menu' style='width: 100%'>
+        <div id='add-poll-options' class='item'>
+          <input id='add-poll-option-text' class='option-text-form' name='add-poll-option' />
+          <div id='add-option' class='ui button green'>+</div>
+        </div>
+      </div>
+    </div>
+    <div class='two wide column'></div>
   </div>
-
-  <hr/>
-  <button id='save'>save</button>
-  <a href='#/poll/{{ id }}'><button>cancel</button></a>
+  <div class='ui stackable grid'>
+    <div class='two wide column'></div>
+    <div class='eight wide column'>
+      <button class='ui button primary' id='save'>Save</button>
+      <a class='ui button' href='#/poll/{{ id }}'>Cancel</a>
+    </div>
+  </div>
 </div>

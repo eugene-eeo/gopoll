@@ -1,0 +1,14 @@
+<div class="ui small modal" id="finalize-poll-modal">
+  <i class="close icon"></i>
+  <div class="header">Finalize Poll?</div>
+  <div class="content">
+    <div class="description">
+      Once you finalize a poll, other users cannot vote and the poll can't be edited.
+      However users can still leave comments and reply to existing ones.
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui button" id="cancel">Cancel</div>
+    <div class="ui button primary" id="confirm">Confirm</div>
+  </div>
+</div>

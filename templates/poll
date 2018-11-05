@@ -23,7 +23,7 @@
       <div class='field'>
         <textarea name='text' style='height: 2em;'/>
       </div>
-      <button class='ui button comment-box-submit'>Reply</button>
+      <button class='ui button primary comment-box-submit'>Reply</button>
     </form>
     <div class='ui comments'>
       <h3 class='ui dividing header'>Comments</h3>

@@ -1,1 +1,4 @@
-<div data-id='{{ id }}'><input data-id='{{ id }}' value='{{ name }}'/><button class='remove-option'>-</button></div>
+<div data-id='{{ id }}' class='item'>
+  <input class='option-text-form' value='{{ name }}' />
+  <div class='ui red button remove-option'>-</a>
+</div>

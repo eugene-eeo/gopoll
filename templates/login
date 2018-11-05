@@ -11,8 +11,8 @@
         <label>Password:</label>
         <input type='text' name='password'/>
       </div>
-      <input class='ui button' type="submit" value="Log in">
-      <a id='register' href='#/register'><input type='button' value='register' /></a>
+      <input class='ui button primary' type="submit" value="Log in">
+      <a class='ui button' id='register' href='#/register'>Register</a>
     </form>
   </div>
   <div class='column'></div>

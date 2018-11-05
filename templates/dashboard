@@ -12,25 +12,29 @@
   </div>
   <div class='four wide column'>
     <h3 class='ui dividing header'>My Polls</h3>
-    {{#polls_created}}
-    <div class='ui card' style='width: 100%'>
-      <div class='content'>
-        <span class='header'><a href='#/poll/{{ id }}'>{{ name }}</a></span>
-        <span class='meta'>{{ description }}</span>
+    <div class='ui link cards'>
+      {{#polls_created}}
+      <div class='ui card poll' style='width: 100%' onclick='visit("/poll/{{ id }}")'>
+        <div class='content'>
+          <span class='header'>{{ name }}</span>
+          <span class='meta'>{{ description }}</span>
+        </div>
       </div>
+      {{/polls_created}}
     </div>
-    {{/polls_created}}
   </div>
   <div class='four wide column'>
     <h3 class='ui dividing header'>Participated Polls</h3>
-    {{#polls_participated}}
-    <div class='ui card' style='width: 100%'>
-      <div class='content'>
-        <span class='header'><a href='#/poll/{{ id }}'>{{ name }}</a></span>
-        <span class='meta'>{{ description }}</span>
+    <div class='ui link cards'>
+      {{#polls_participated}}
+      <div class='ui card poll' style='width: 100%' onclick='visit("/poll/{{ id }}")'>
+        <div class='content'>
+          <span class='header'>{{ name }}</span>
+          <span class='meta'>{{ description }}</span>
+        </div>
       </div>
+      {{/polls_participated}}
     </div>
-    {{/polls_participated}}
   </div>
   <div class='two wide column'></div>
 </div>
