@@ -1,6 +1,19 @@
-<h2>Users</h2>
-<ul>
-{{#people}}
-  <li>{{ forename }} {{ surname }} (<a href='#/user/{{ username }}'>@{{ username }}</a>)</li>
-{{/people}}
-</ul>
+<div class='ui stackable grid'>
+  <div class='three wide column'></div>
+  <div class='ten wide column'>
+    <h2>Users</h2>
+    <div class='ui link cards'>
+      {{#people}}
+      <div class='ui card' style='width: 30%' onclick='visit("/user/{{ username }}")'>
+        <div class='content'>
+          <span class='header'>{{ forename }} {{ surname }}</span>
+          <div class='meta'>
+            <span>@{{ username }}</span>
+          </div>
+        </div>
+      </div>
+      {{/people}}
+    </div>
+  </div>
+  <div class='three wide column'></div>
+</div>
