@@ -1,33 +1,24 @@
 <a class='ui item' href='#/'><b>GoPoll</b></a>
 <a class='ui item' href='#/people'>Users</a>
-{{#logged_in}}
-<a class='ui item' href='#/create-poll'>Create poll</a>
-<a class='ui item' href='#/settings'>Settings</a>
-<div class='right menu'>
-  <div class='ui item'>
-    <div id='search' class='ui category search'>
-      <div class='ui icon input'>
-        <input class='prompt' type='text' placeholder='Search...'>
-        <i class='search icon'></i>
-      </div>
-      <div class='results'></div>
+<div class='ui item' >
+  <div id='search' class='ui category search'>
+    <div class='ui icon input'>
+      <input class='prompt' type='text' placeholder='Search...'>
+      <i class='search icon'></i>
     </div>
+    <div class='results'></div>
   </div>
-  <a class='ui item' href='#/'>@{{ user.username }}</a>
-  <div class='ui item'><a class='ui button' href='#/logout'>Logout</a></div>
 </div>
+<div class='right menu'>
+{{#logged_in}}
+  <span class='ui item'>@{{ user.username }}</span>
+  <a class='ui item' href='#/create-poll'>Create poll</a>
+  <a class='ui item' href='#/settings'>Settings</a>
+  <div class="ui item">
+      <a class='ui button' href='#/logout'>Logout</a>
+  </div>
 {{/logged_in}}
 {{^logged_in}}
-<div class='right menu'>
-  <div class='ui item'>
-    <div id='search' class='ui category search'>
-      <div class='ui icon input'>
-        <input class='prompt' type='text' placeholder='Search...'>
-        <i class='search icon'></i>
-      </div>
-      <div class='results'></div>
-    </div>
-  </div>
   <a class='ui item' href='#/login'>Login</a>
-</div>
 {{/logged_in}}
+</div>

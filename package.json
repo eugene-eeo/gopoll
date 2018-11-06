@@ -13,6 +13,7 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
     "express-json-validator-middleware": "^1.2.3",
+    "markdown-it": "^8.4.2",
     "morgan": "^1.9.1",
     "uuid": "^3.3.2"
   }

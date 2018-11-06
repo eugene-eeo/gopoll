@@ -115,7 +115,18 @@ $(document).hashroute('/create-poll', () => {
 
 $(document).hashroute('/user/:username', (e) => {
     $.ajax('/api/people/' + e.params.username, {
-        success: (data) => $('#content').html(Mustache.render(Templates.user, data)),
+        success: (data) => {
+            $('#content').html(Mustache.render(Templates.user, data))
+            $.ajax('/api/activity/' + e.params.username, {
+                success: (activities) => {
+                    data.activities = activities.map(x => {
+                        x.text = format_activity(x);
+                        return x;
+                    });
+                    $('#content').html(Mustache.render(Templates.user, data));
+                },
+            });
+        },
     });
 });
 
@@ -215,6 +226,18 @@ $(document).hashroute('/logout', () => {
 });
 
 
+format_activity = (activity) => {
+    return {
+        'COMMENT_ON_POLL':  "left a comment on",
+        'REPLY_TO_COMMENT': "replied to a comment on",
+        'CREATE_POLL':      "created",
+        'FINALIZE_POLL':    "finalized",
+        'VOTE':             "voted for " + activity.meta + " in",
+        'UNVOTE':           "unvoted " + activity.meta + " in",
+    }[activity.type];
+};
+
+
 $(document).hashroute('/', () => {
     $.ajax('/api/auth/me', {
         success: (data) => {
@@ -224,6 +247,15 @@ $(document).hashroute('/', () => {
             data.polls_participated = data.polls_participated.filter(x => created.indexOf(x.id) === -1);
             data.polls_participated.forEach(trim_description);
             $('#content').html(Mustache.render(Templates.dashboard, data));
+            $.ajax('/api/activity', {
+                success: (activities) => {
+                    data.activities = activities.map(x => {
+                        x.text = format_activity(x);
+                        return x;
+                    });
+                    $('#content').html(Mustache.render(Templates.dashboard, data));
+                },
+            });
         },
     });
 });
@@ -393,7 +425,7 @@ $(document).hashroute('/edit-poll/:id', (e) => {
                     description: $('[name=description]').val(),
                     options:     [],
                 };
-                if (json.name.length === 0 || json.description.length === 0) return;
+                if (json.name.length === 0) return;
                 json.options = $('#edit-poll-options').children().map(function() {
                     var $this = $(this);
                     return {
