@@ -5,15 +5,18 @@ const validate = validator.validate;
 // users
 const create_user_schema = {
     type: 'object',
-    required: ['username', 'password', 'forename', 'surname'],
+    // special case to conform to spec.
+    // this is the only public POST endpoint so this is ok.
+    required: ['username', 'password', 'forename', 'surname', 'access_token'],
     properties: {
         username: {
             type: 'string',
-            pattern: '[a-zA-Z][A-Za-z0-9]+'
+            pattern: '^[a-zA-Z][A-Za-z0-9_]+$'
         },
         password: {type: 'string', minLength: 1},
         forename: {type: 'string', minLength: 1},
         surname:  {type: 'string', minLength: 1},
+        access_token: {type: 'string'},
     },
 };
 
@@ -22,7 +25,7 @@ const change_user_settings_schema = {
     properties: {
         username: {
             type: 'string',
-            pattern: '[a-zA-Z][A-Za-z0-9]+'
+            pattern: '^[a-zA-Z][A-Za-z0-9_]+$'
         },
         password: {type: 'string', minLength: 1},
         forename: {type: 'string', minLength: 1},

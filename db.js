@@ -7,12 +7,6 @@ const users = {
         surname:  "Derbyshire",
         password: "doctor",
     }),
-    "shufay": new User({
-        username: "shufay",
-        forename: "Shu Fay",
-        surname:  "Ung",
-        password: "abc",
-    }),
     "eeojun": new User({
         username: "eeojun",
         forename: "Jun",

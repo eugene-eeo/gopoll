@@ -11,6 +11,10 @@ router.get('/', (req, res) => {
 
 
 router.post('/', schema.validate({body: schema.create_user_schema}), (req, res) => {
+    // Check if access token is correct
+    if (req.body.access_token !== 'concertina') {
+        return error(res, error_codes.INVALID_ACCESS_TOKEN, 403);
+    }
     // Check if username is taken
     if (users.hasOwnProperty(req.body.username)) {
         return error(res, error_codes.USERNAME_TAKEN);

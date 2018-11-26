@@ -31,7 +31,7 @@ function trim_description(poll) {
 
 $.hashroute('middleware', function() {
     if (window.done) return this.next();
-    $.ajax('/api/auth/me', {
+    $.ajax('/auth/me', {
         // here we explicitly ignore error, since we don't want to force login.
         error:   () => {},
         success: (data) => { window.current_user = data; },
@@ -56,7 +56,7 @@ $.hashroute('middleware', function() {
         type: 'category',
         minCharacters: 3,
         apiSettings: {
-            url: '/api/search?q={query}',
+            url: '/search?q={query}',
             onResponse: res => {
                 var r = {results: {}};
                 if (res.users.length > 0) r.results.users = {name: 'Users', results: []};
@@ -104,7 +104,7 @@ $(document).hashroute('/create-poll', () => {
         if (!$this.form('is valid')) return;
         var data = $this.form('get values');
         data.multi = data.multi === 'on';
-        $.ajax('/api/poll', {
+        $.ajax('/poll', {
             method: 'POST',
             data: JSON.stringify(data),
             success: (poll) => visit('/poll/' + poll.id),
@@ -114,10 +114,10 @@ $(document).hashroute('/create-poll', () => {
 
 
 $(document).hashroute('/user/:username', (e) => {
-    $.ajax('/api/people/' + e.params.username, {
+    $.ajax('/people/' + e.params.username, {
         success: (data) => {
             $('#content').html(Mustache.render(Templates.user, data))
-            $.ajax('/api/activity/' + e.params.username, {
+            $.ajax('/activity/' + e.params.username, {
                 success: (activities) => {
                     data.activities = activities.map(x => {
                         x.text = format_activity(x);
@@ -132,7 +132,7 @@ $(document).hashroute('/user/:username', (e) => {
 
 
 $(document).hashroute('/people', () => {
-    $.ajax('/api/people', {
+    $.ajax('/people', {
         success: (people) => {
             $('#content').html(Mustache.render(Templates.people, {
                 people: people,
@@ -170,7 +170,7 @@ $(document).hashroute('/register', () => {
             });
             return;
         }
-        $.ajax('/api/people', {
+        $.ajax('/people', {
             method: 'POST',
             data: JSON.stringify({
                 forename: forename,
@@ -200,7 +200,7 @@ $(document).hashroute('/login', () => {
         var $errors = $('#errors').html('');
         var username = $form.find('input[name=username]').val();
         var password = $form.find('input[name=password]').val();
-        $.ajax('/api/auth/login', {
+        $.ajax('/auth/login', {
             method: 'POST',
             data: JSON.stringify({
                 username: username,
@@ -216,7 +216,7 @@ $(document).hashroute('/login', () => {
 
 
 $(document).hashroute('/logout', () => {
-    $.ajax('/api/auth/logout', {
+    $.ajax('/auth/logout', {
         method: 'POST',
         success: () => {
             window.current_user = null;
@@ -239,7 +239,7 @@ format_activity = (activity) => {
 
 
 $(document).hashroute('/', () => {
-    $.ajax('/api/auth/me', {
+    $.ajax('/auth/me', {
         success: (data) => {
             window.current_user = data;
             var created = data.polls_created.map(x => x.id);
@@ -247,7 +247,7 @@ $(document).hashroute('/', () => {
             data.polls_participated = data.polls_participated.filter(x => created.indexOf(x.id) === -1);
             data.polls_participated.forEach(trim_description);
             $('#content').html(Mustache.render(Templates.dashboard, data));
-            $.ajax('/api/activity', {
+            $.ajax('/activity', {
                 success: (activities) => {
                     data.activities = activities.map(x => {
                         x.text = format_activity(x);
@@ -262,7 +262,7 @@ $(document).hashroute('/', () => {
 
 $(document).hashroute('/poll/:id', (e) => {
     function make_comment($parent, json, done) {
-        $.ajax('/api/comment/', {
+        $.ajax('/comment/', {
             method: 'POST',
             data: JSON.stringify(json),
             success: (data) => {
@@ -304,7 +304,7 @@ $(document).hashroute('/poll/:id', (e) => {
         $('#content').find('.add-vote').click(function() {
             var $this = $(this);
             var id = $this.data('id');
-            $.ajax('/api/poll/' + poll.id + '/vote/' + id, {
+            $.ajax('/poll/' + poll.id + '/vote/' + id, {
                 method: 'POST',
                 success: (poll) => render_poll(poll),
             });
@@ -313,7 +313,7 @@ $(document).hashroute('/poll/:id', (e) => {
         $('#content').find('.add-unvote').click(function() {
             var $this = $(this);
             var id = $this.data('id');
-            $.ajax('/api/poll/' + poll.id + '/vote/' + id, {
+            $.ajax('/poll/' + poll.id + '/vote/' + id, {
                 method: 'DELETE',
                 success: (poll) => render_poll(poll),
             });
@@ -323,7 +323,7 @@ $(document).hashroute('/poll/:id', (e) => {
             var $this = $(this);
             var $panel = $this.parent();
             var id = $panel.data('comment-id');
-            $.ajax('/api/comment/' + id, {
+            $.ajax('/comment/' + id, {
                 method: 'DELETE',
                 success: () => $panel.parent().parent().remove(),
             });
@@ -354,7 +354,7 @@ $(document).hashroute('/poll/:id', (e) => {
             modal.find('.close').click(e => { e.preventDefault(); modal.modal('hide'); modal.remove(); });
             modal.find('#cancel').click(() => { modal.modal('hide'); modal.remove(); });
             modal.find('#confirm').click(() => {
-                $.ajax('/api/poll/' + poll.id, {
+                $.ajax('/poll/' + poll.id, {
                     method: 'DELETE',
                     success: () => visit(''),
                 });
@@ -368,7 +368,7 @@ $(document).hashroute('/poll/:id', (e) => {
             modal.find('.close').click(e => { e.preventDefault(); modal.modal('hide'); modal.remove(); });
             modal.find('#cancel').click(() => { modal.modal('hide'); modal.remove(); });
             modal.find('#confirm').click(() => {
-                $.ajax('/api/poll/' + poll.id + '/finalize', {
+                $.ajax('/poll/' + poll.id + '/finalize', {
                     method: 'POST',
                     success: (poll) => render_poll(poll),
                 });
@@ -376,7 +376,7 @@ $(document).hashroute('/poll/:id', (e) => {
         });
     }
 
-    $.ajax('/api/poll/' + e.params.id, {success: poll => render_poll(poll)});
+    $.ajax('/poll/' + e.params.id, {success: poll => render_poll(poll)});
 });
 
 
@@ -389,7 +389,7 @@ $(document).hashroute('/edit-poll/:id', (e) => {
         $parent.append($div);
     }
 
-    $.ajax('/api/poll/' + e.params.id, {
+    $.ajax('/poll/' + e.params.id, {
         success: (poll) => {
             if (poll.user.username !== window.current_user.username) return visit('');
             $('#content').html(Mustache.render(Templates.edit_poll, poll));
@@ -433,7 +433,7 @@ $(document).hashroute('/edit-poll/:id', (e) => {
                         name: $this.find('input').val(),
                     };
                 }).get();
-                $.ajax('/api/poll/' + poll.id, {
+                $.ajax('/poll/' + poll.id, {
                     method: 'PUT',
                     data: JSON.stringify(json),
                     success: () => visit('/poll/' + poll.id),
@@ -463,7 +463,7 @@ $(document).hashroute('/settings', () => {
                 }
                 data.password = password;
             }
-            $.ajax('/api/auth/settings', {
+            $.ajax('/auth/settings', {
                 method: 'POST',
                 data: JSON.stringify(data),
                 success: (data) => {
@@ -473,5 +473,5 @@ $(document).hashroute('/settings', () => {
             });
         })
     };
-    $.ajax('/api/auth/me', {success: reload});
+    $.ajax('/auth/me', {success: reload});
 });

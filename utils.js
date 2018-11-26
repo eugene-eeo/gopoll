@@ -16,6 +16,7 @@ const error_codes = {
     CANNOT_VOTE:         'CANNOT_VOTE',
     HASNT_VOTED:         'HASNT_VOTED',
     USERNAME_TAKEN:      'USERNAME_TAKEN',
+    INVALID_ACCESS_TOKEN:'INVALID_ACCESS_TOKEN',
 };
 
 
@@ -34,6 +35,7 @@ const error_messages = {
     CANNOT_VOTE:         'Cannot cast vote.',
     HASNT_VOTED:         'Hasn\'t voted.',
     USERNAME_TAKEN:      'Username is already taken.',
+    INVALID_ACCESS_TOKEN:'Invalid access token.',
 };
 
 
