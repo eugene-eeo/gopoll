@@ -1,5 +1,4 @@
 <div class="ui small modal" id="delete-poll-modal">
-  <i class="close icon"></i>
   <div class="header">Delete Poll?</div>
   <div class="content">
     <div class="description">
@@ -7,7 +6,7 @@
     </div>
   </div>
   <div class="actions">
-    <div class="ui button" id="cancel">Cancel</div>
-    <div class="ui button red" id="confirm">Delete</div>
+    <div class="ui button deny">Cancel</div>
+    <div class="ui button red ok">Delete</div>
   </div>
 </div>

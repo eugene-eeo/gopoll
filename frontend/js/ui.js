@@ -321,9 +321,8 @@ $(document).hashroute('/poll/:id', (e) => {
             var modal = $(Templates.delete_poll_modal);
             $('#content').append(modal);
             modal.modal('show');
-            modal.find('.close').click(e => { e.preventDefault(); modal.modal('hide'); modal.remove(); });
-            modal.find('#cancel').click(() => { modal.modal('hide'); modal.remove(); });
-            modal.find('#confirm').click(() => {
+            modal.find('.deny').click(() => { modal.modal('hide'); modal.remove(); });
+            modal.find('.ok').click(() => {
                 $.ajax('/poll/' + poll.id, {
                     method: 'DELETE',
                     success: () => visit(''),
@@ -335,9 +334,8 @@ $(document).hashroute('/poll/:id', (e) => {
             var modal = $(Templates.finalize_poll_modal);
             $('#content').append(modal);
             modal.modal('show');
-            modal.find('.close').click(e => { e.preventDefault(); modal.modal('hide'); modal.remove(); });
-            modal.find('#cancel').click(() => { modal.modal('hide'); modal.remove(); });
-            modal.find('#confirm').click(() => {
+            modal.find('.deny').click(() => { modal.modal('hide'); modal.remove(); });
+            modal.find('.ok').click(() => {
                 $.ajax('/poll/' + poll.id + '/finalize', {
                     method: 'POST',
                     success: (poll) => render_poll(poll),
