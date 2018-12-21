@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const Poll = require('../models/poll');
-const Activity = require('../models/activity');
-const { polls, activities } = require('../db');
+const { polls } = require('../db');
 const schema = require('../schema');
 const { error_codes, error, needs_auth, get_user } = require('../utils');
 
@@ -21,7 +20,6 @@ router.post('/', needs_auth,
             description: req.body.description,
             multi:       req.body.multi,
         });
-        activities.push(Activity.from_poll(polls[id]));
         res.json(polls[id].to_json_with_details(user));
     });
 
@@ -86,7 +84,6 @@ router.post('/:id/finalize',
         const user = get_user(req);
         const poll = polls[req.params.id];
         poll.finalize();
-        activities.push(Activity.from_finalize(poll));
         res.json(poll.to_json_with_details(user));
     });
 
@@ -109,7 +106,6 @@ router.post('/:id/vote/:opt',
             return error(res, error_codes.CANNOT_VOTE, 401);
         }
         option.users.push(user);
-        activities.push(Activity.from_vote(user, poll, option));
         res.json(poll.to_json_with_details(user));
     });
 
@@ -131,7 +127,6 @@ router.delete('/:id/vote/:opt',
             return error(res, error_codes.HASNT_VOTED, 404);
         }
         option.users.splice(i, 1);
-        activities.push(Activity.from_unvote(user, poll, option));
         res.json(poll.to_json_with_details(user));
     });
 

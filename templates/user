@@ -18,18 +18,6 @@
         </div>
       </div>
     {{/polls_created}}
-    <h3 class='ui dividing header'>Activity</h3>
-    <div class='ui feed'>
-    {{#activities}}
-      <div class='event'>
-        <div class='content'>
-          <i class='ui icon {{#is_private}}lock{{/is_private}} {{^is_private}}globe{{/is_private}}'></i>
-          <a href='#/user/{{ user.username }}'>{{ user.forename }} {{ user.surname }}</a>
-          {{ text }}
-          <a href='#/poll/{{ poll.id }}'>{{ poll.name }}</a>
-        </div>
-      </div>
-    {{/activities}}
   </div>
   <div class='column'></div>
 </div>

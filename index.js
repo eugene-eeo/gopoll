@@ -9,12 +9,11 @@ app.use(express.json());
 app.use(cookieParser('secret'));
 
 // routes
-app.use('/people',   require('./routes/people'));
-app.use('/auth',     require('./routes/auth'));
-app.use('/poll',     require('./routes/polls'));
-app.use('/comment',  require('./routes/comments'));
-app.use('/search',   require('./routes/search'));
-app.use('/activity', require('./routes/activity'));
+app.use('/people',  require('./routes/people'));
+app.use('/auth',    require('./routes/auth'));
+app.use('/poll',    require('./routes/polls'));
+app.use('/comment', require('./routes/comments'));
+app.use('/search',  require('./routes/search'));
 app.use(express.static('frontend'));
 
 // error handler for ValidationErrors

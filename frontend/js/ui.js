@@ -9,6 +9,7 @@ $.ajaxSetup({
         $('#errors').html('');
         if (!r.responseJSON) return;
         if (r.responseJSON.code === 'NEEDS_AUTH') {
+            window.current_user = null;
             visit('/login');
             return;
         }
@@ -115,18 +116,7 @@ $(document).hashroute('/create-poll', () => {
 
 $(document).hashroute('/user/:username', (e) => {
     $.ajax('/people/' + e.params.username, {
-        success: (data) => {
-            $('#content').html(Mustache.render(Templates.user, data))
-            $.ajax('/activity/' + e.params.username, {
-                success: (activities) => {
-                    data.activities = activities.map(x => {
-                        x.text = format_activity(x);
-                        return x;
-                    });
-                    $('#content').html(Mustache.render(Templates.user, data));
-                },
-            });
-        },
+        success: (data) => $('#content').html(Mustache.render(Templates.user, data))
     });
 });
 
@@ -226,18 +216,6 @@ $(document).hashroute('/logout', () => {
 });
 
 
-format_activity = (activity) => {
-    return {
-        'COMMENT_ON_POLL':  "left a comment on",
-        'REPLY_TO_COMMENT': "replied to a comment on",
-        'CREATE_POLL':      "created",
-        'FINALIZE_POLL':    "finalized",
-        'VOTE':             "voted for " + activity.meta + " in",
-        'UNVOTE':           "unvoted " + activity.meta + " in",
-    }[activity.type];
-};
-
-
 $(document).hashroute('/', () => {
     $.ajax('/auth/me', {
         success: (data) => {
@@ -247,18 +225,10 @@ $(document).hashroute('/', () => {
             data.polls_participated = data.polls_participated.filter(x => created.indexOf(x.id) === -1);
             data.polls_participated.forEach(trim_description);
             $('#content').html(Mustache.render(Templates.dashboard, data));
-            $.ajax('/activity', {
-                success: (activities) => {
-                    data.activities = activities.map(x => {
-                        x.text = format_activity(x);
-                        return x;
-                    });
-                    $('#content').html(Mustache.render(Templates.dashboard, data));
-                },
-            });
         },
     });
 });
+
 
 $(document).hashroute('/poll/:id', (e) => {
     function make_comment($parent, json, done) {

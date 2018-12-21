@@ -18,12 +18,10 @@ const users = {
 const tokens = {};
 const polls = {};
 const comments = {};
-const activities = [];
 
 module.exports = {
     users,
     tokens,
     polls,
     comments,
-    activities,
 };

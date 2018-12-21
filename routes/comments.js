@@ -1,10 +1,9 @@
 const uuidv4 = require('uuid/v4');
 const router = require('express').Router();
 
-const Activity = require('../models/activity');
 const Comment = require('../models/comment');
 const schema = require('../schema');
-const { polls, comments, activities } = require('../db');
+const { polls, comments } = require('../db');
 const { error_codes, error, needs_auth, get_user } = require('../utils');
 
 
@@ -31,7 +30,6 @@ router.post('/',
         reply_to.comments.push(comment);
         comment.parent = reply_to;
         comments[uuid] = comment;
-        activities.push(Activity.from_comment(comment));
         res.json(comment.to_json());
     });
 
