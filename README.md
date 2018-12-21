@@ -14,3 +14,6 @@ assignment for durham programming paradigms module
    - [x] `/comment`
    - [x] `/search`
    - [x] use token instead of login=username for cookie
+ - [ ] general
+   - [ ] jest test
+   - [ ] make video
