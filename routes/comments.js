@@ -54,9 +54,7 @@ router.delete('/:id',
         if (!comment) {
             return error(res, error_codes.COMMENT_NOT_FOUND, 404);
         }
-        const i = comment.parent.comments.indexOf(comment);
-        comment.parent.comments.splice(i, 1);
-        delete comments[req.params.id];
+        comment.remove();
         res.json({});
     });
 

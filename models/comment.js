@@ -1,3 +1,5 @@
+const { comments } = require('../db');
+
 function Comment({id, text, user, poll}) {
     this.id = id;
     this.text = text;
@@ -23,6 +25,17 @@ Comment.prototype = {
             user: this.user.to_json(),
             poll: this.poll.to_json(),
         };
+    },
+    remove: function(r) {
+        // skip the ceremony if this is called recursively
+        // every comment has a parent so we don't have to check
+        // if this.parent is null.
+        if (!r) {
+            const i = this.parent.comments.indexOf(this);
+            this.parent.comments.splice(i, 1);
+        }
+        delete comments[this.id];
+        this.comments.forEach(c => c.remove(true));
     },
 };
 

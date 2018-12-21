@@ -1,4 +1,4 @@
-<form class='ui form'>
+<form class='ui form comment-reply-dialog'>
   <div class='field'>
     <textarea name='comment-reply-text' placeholder='Comment...'/>
   </div>
