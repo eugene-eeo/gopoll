@@ -5,8 +5,8 @@ assignment for durham programming paradigms module
  - [ ] frontend
    - [ ] can use ES6
    - [x] core functionality
-   - [ ] responsive
-   - [ ] make nice
+   - [x] responsive
+   - [x] make nice
  - [x] backend
    - [x] `/people`
    - [x] `/auth`
