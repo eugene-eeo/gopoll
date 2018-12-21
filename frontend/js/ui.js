@@ -50,6 +50,7 @@ $.hashroute('middleware', function() {
         user: window.current_user,
         logged_in: !!window.current_user,
     };
+    $('.ui.vertical.menu').hide();
     $('#mobile-navbar').html(Mustache.render(Templates.mobile_navbar, context));
     $('#navbar').html(Mustache.render(Templates.navbar, context));
     // clear errors

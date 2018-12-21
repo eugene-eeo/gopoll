@@ -20,41 +20,59 @@
 #add-poll-options .button  { padding: 0.5em 1em !important; margin: 0; }
 .comment .comments         { margin: 5px 0 0 0px!important; padding: 0 0 0 24px!important; border-left: 2px solid #ccc; }
 .comment-reply-dialog      { padding-top: 10px !important; }
-.ui.fixed + div {
-  margin-top: 100px;
+.padding-reset{
+  padding: 0px !important;
+}
+.mobile.only .navbar-search .input .prompt {
+  padding: 0.4em 1em;
+}
+@media (max-width: 767px) {
+  .padding-reset{ padding: 0 0.5em !important; }
+}
+.ui.vertical.menu {
+  margin-top: -15px !important;
+  width: 100%;
+  display: none;
 }
   </style>
 </head>
 <body>
-  <div class="ui fixed inverted main menu">
-    <a class="item mobile_item"><i class="bars icon"></i></a>
-    <div class='ui item mobile_item'>
-      <div class='ui category search navbar-search'>
-        <div class='ui icon input'>
-          <input class='prompt' type='text' placeholder='Search...'>
-          <i class='search icon'></i>
-        </div>
-        <div class='results'></div>
-      </div>
+  <div class="ui page grid">
+    <div class="computer tablet only row">
+      <div class="ui inverted menu navbar" style='width: 100%' id="navbar"></div>
     </div>
-  </div>
-  <div class='ui pushable'>
-    <div class='ui sidebar vertical menu' id='mobile-navbar'></div>
-    <div class='pusher'>
-      <div>
+    <div class="mobile only narrow row" style='margin: 0; padding-bottom: 0'>
+      <div class="ui inverted navbar menu" style='width: 100%; padding-bottom: 0'>
+        <div class='item'>
+          <div class='ui category search navbar-search'>
+            <div class='ui icon input'>
+              <input class='prompt' type='text' placeholder='Search...'>
+              <i class='search icon'></i>
+            </div>
+            <div class='results'></div>
+          </div>
+        </div>
+        <div class="right menu open">
+          <a class="launch icon item"><i class='content icon'></i></a>
+        </div>
+      </div>
+      <div class="ui vertical navbar menu"  style='width: 100%; padding-bottom: 0' id="mobile-navbar"></div>
+    </div>
+    <div class="row" style='padding: 0'>
+      <div class="column padding-reset">
         <div id='errors'></div>
         <div id='content'></div>
       </div>
     </div>
   </div>
+
   <script src='/js/ui.js'></script>
   <script>
-$('.mobile_item .navbar-search').click(() => false);
-$('#mobile-navbar a.item').click(() => { $('.ui.sidebar').sidebar('hide'); });
-$('.ui.sidebar').sidebar({
-    context: $('.ui.pushable'),
-    transition: 'overlay'
-}).sidebar('attach events', '.mobile_item');
+$('.right.menu.open').on("click",function(e){
+  e.preventDefault();
+  $('.ui.vertical.menu').toggle();
+});
+$('.ui.dropdown').dropdown();
   </script>
 </body>
 </html>
