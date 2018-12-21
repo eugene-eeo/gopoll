@@ -1,7 +1,7 @@
 <div class='ui stackable three column grid'>
   <div class='column'></div>
   <div class='column'>
-    <form id="settings" class='ui form segment error'>
+    <form id="settings" class='ui form error'>
       <h2 class='ui dividing header'>Settings</h2>
       {{#saved}}
       <div class='ui message'><p>Your changes have been saved.</p></div>

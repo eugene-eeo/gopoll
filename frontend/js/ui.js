@@ -46,14 +46,16 @@ $.hashroute('middleware', function() {
 
 // inject navbar
 $.hashroute('middleware', function() {
-    $('#navbar').html(Mustache.render(Templates.navbar, {
+    var context = {
         user: window.current_user,
         logged_in: !!window.current_user,
-    }));
+    };
+    $('#mobile-navbar').html(Mustache.render(Templates.mobile_navbar, context));
+    $('#navbar').html(Mustache.render(Templates.navbar, context));
     // clear errors
     $('#errors').html('');
     // setup search
-    $('#search').search({
+    $('.navbar-search').search({
         type: 'category',
         minCharacters: 3,
         apiSettings: {

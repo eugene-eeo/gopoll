@@ -1,7 +1,7 @@
 <div class='ui stackable grid'>
   <div class='three wide column'></div>
   <div class='ten wide column' id='create-poll'>
-    <form id='create-poll-form' class='ui form segment error' style='width: 100%'>
+    <form id='create-poll-form' class='ui form error' style='width: 100%'>
       <h2 class='ui dividing header'>Create Poll</h2>
       <div class='field'>
         <label>Name:</label>

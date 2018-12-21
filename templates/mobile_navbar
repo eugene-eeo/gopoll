@@ -1,0 +1,10 @@
+<a class='ui item' href='#/'><b>GoPoll</b></a>
+<a class='ui item' href='#/people'>Users</a>
+{{#logged_in}}
+  <a class='ui item' href='#/create-poll'>Create poll</a>
+  <a class='ui item' href='#/settings'>Settings</a>
+  <a class='ui item' href='#/logout'>Logout</a>
+{{/logged_in}}
+{{^logged_in}}
+  <a class='ui item' href='#/login'>Login</a>
+{{/logged_in}}
