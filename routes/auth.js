@@ -44,7 +44,7 @@ router.get('/me', needs_auth, (req, res) => {
 
 router.post('/settings',
     needs_auth,
-    schema.validate({body: schema.create_user_schema}),
+    schema.validate({body: schema.change_user_settings_schema}),
     (req, res) => {
         const user = get_user(req);
         if (req.body.username) user.username = req.body.username;

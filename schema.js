@@ -110,6 +110,7 @@ const search_schema = {
 module.exports = {
     validate,
     create_user_schema,
+    change_user_settings_schema,
     login_schema,
     create_poll_schema,
     update_poll_schema,
