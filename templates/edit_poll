@@ -12,9 +12,9 @@
       <h3>Options</h3>
       <div id='edit-poll-options' class='ui vertical menu' style='width: 100%'></div>
       <div class='ui vertical menu' style='width: 100%'>
-        <div id='add-poll-options' class='item'>
-          <input id='add-poll-option-text' class='option-text-form' name='add-poll-option' />
-          <div id='add-option' class='ui button green'>+</div>
+        <div id='add-poll-options' class='item' style='display: flex'>
+          <input id='add-poll-option-text' class='option-text-form' name='add-poll-option' style='flex-basis: 80%;'/>
+          <div id='add-option' class='ui button green' style='flex-basis: 20%;'>+</div>
         </div>
       </div>
     </div>

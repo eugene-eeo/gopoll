@@ -29,7 +29,7 @@
 @media (max-width: 767px) {
   .padding-reset{ padding: 0 0.5em !important; }
 }
-.ui.vertical.menu {
+#mobile-navbar {
   margin-top: -15px !important;
   width: 100%;
   display: none;
@@ -66,13 +66,13 @@
     </div>
   </div>
 
-  <script src='/js/ui.js'></script>
   <script>
 $('.right.menu.open').on("click",function(e){
   e.preventDefault();
-  $('.ui.vertical.menu').toggle();
+  $('#mobile-navbar').toggle();
 });
 $('.ui.dropdown').dropdown();
   </script>
+  <script src='/js/ui.js'></script>
 </body>
 </html>
