@@ -5,9 +5,7 @@ const validate = validator.validate;
 // users
 const create_user_schema = {
     type: 'object',
-    // special case to conform to spec.
-    // this is the only public POST endpoint so this is ok.
-    required: ['username', 'password', 'forename', 'surname', 'access_token'],
+    required: ['username', 'password', 'forename', 'surname'],
     properties: {
         username: {
             type: 'string',
@@ -16,7 +14,6 @@ const create_user_schema = {
         password: {type: 'string', minLength: 1},
         forename: {type: 'string', minLength: 1},
         surname:  {type: 'string', minLength: 1},
-        access_token: {type: 'string'},
     },
 };
 
@@ -95,18 +92,6 @@ const update_comment_schema = {
     },
 };
 
-// search
-const search_schema = {
-    type: 'object',
-    required: ['q', 'include_users', 'include_polls', 'include_comments'],
-    properties: {
-        q: {type: 'string', minLength: 1},
-        include_users:    {type: 'boolean'},
-        include_polls:    {type: 'boolean'},
-        include_comments: {type: 'boolean'},
-    },
-};
-
 module.exports = {
     validate,
     create_user_schema,
@@ -116,5 +101,4 @@ module.exports = {
     update_poll_schema,
     create_comment_schema,
     update_comment_schema,
-    search_schema,
 };

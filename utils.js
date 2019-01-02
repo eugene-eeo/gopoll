@@ -33,7 +33,7 @@ const error_messages = {
     COMMENT_NOT_FOUND:   'Comment not found.',
     POLL_DIFFERENT_USER: 'Not allowed to modify poll.',
     CANNOT_VOTE:         'Cannot cast vote.',
-    HASNT_VOTED:         'Hasn\'t voted.',
+    HASNT_VOTED:         'User hasn\'t voted.',
     USERNAME_TAKEN:      'Username is already taken.',
     INVALID_ACCESS_TOKEN:'Invalid access token.',
 };
