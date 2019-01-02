@@ -28,9 +28,9 @@ Comment.prototype = {
     },
     remove: function(r) {
         // skip the ceremony if this is called recursively
-        // every comment has a parent so we don't have to check
-        // if this.parent is null.
         if (!r) {
+            // every comment has a parent so we don't have to check
+            // if this.parent is null.
             const i = this.parent.comments.indexOf(this);
             this.parent.comments.splice(i, 1);
         }
