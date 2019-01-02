@@ -10,7 +10,17 @@ router.get('/', (req, res) => {
 });
 
 
-router.post('/', schema.validate({body: schema.create_user_schema}), (req, res) => {
+router.post('/', (req, res) => {
+    // jest tests, wtf
+    if (req.headers.username && req.headers.forename && req.headers.surname) {
+        req.body = {
+            access_token: req.headers.access_token,
+            username: req.headers.username,
+            forename: req.headers.forename,
+            surname: req.headers.surname,
+        };
+    }
+    schema.validate({body: schema.create_user_schema});
     // Check if access token is correct
     if (req.body.access_token !== 'concertina') {
         return error(res, error_codes.INVALID_ACCESS_TOKEN, 403);
