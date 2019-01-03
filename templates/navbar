@@ -1,4 +1,4 @@
-<a class='ui item' href='#/'><b>GoPoll</b></a>
+<a class='ui item' href='#/'><b>@{{ user.username }}</b></a>
 <a class='ui item' href='#/people'>Users</a>
 <div class='ui item' >
   <div class='ui category search navbar-search'>

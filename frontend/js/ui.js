@@ -142,36 +142,24 @@ $(document).hashroute('/register', () => {
         return;
     }
     $('#content').html(Mustache.render(Templates.register));
-    $('#content').find('#register').submit((evt) => {
+    $('#register').form({
+        fields: {
+            username: ['empty'],
+            forename: ['empty'],
+            surname:  ['empty'],
+            password: ['empty', 'match[password-repeat]'],
+        },
+    });
+    $('#register').submit(function(evt) {
         evt.preventDefault();
-        var $form = $('#register');
-        var $errors = $('#errors').html('');
-        var errors = [];
-        var forename        = $form.find('[name=forename]').val();
-        var surname         = $form.find('[name=surname]').val();
-        var username        = $form.find('[name=username]').val();
-        var password        = $form.find('[name=password]').val();
-        var password_repeat = $form.find('[name=password-repeat]').val();
-
-        if (forename.length === 0)        errors.push('First name is empty');
-        if (surname.length === 0)         errors.push('Last name is empty');
-        if (username.length === 0)        errors.push('Username is empty');
-        if (password !== password_repeat) errors.push("Passwords don't match");
-        if (errors.length > 0) {
-            errors.forEach((err) => {
-                $errors.append($("<span class='error'>" + err + "</span>"));
-            });
-            return;
-        }
+        var $this = $(this);
+        if (!$this.form('is valid')) return;
+        var data = $this.form('get values');
+        delete data['password-repeat'];
+        data.access_token = 'concertina';
         $.ajax('/people', {
             method: 'POST',
-            data: JSON.stringify({
-                access_token: 'concertina',
-                forename: forename,
-                surname: surname,
-                username: username,
-                password: password,
-            }),
+            data: JSON.stringify(data),
             success: () => visit('login'),
         });
     });
@@ -348,31 +336,18 @@ $(document).hashroute('/poll/:id', (e) => {
 $(document).hashroute('/edit-poll/:id', (e) => {
     if (!window.current_user) return visit('/login');
 
-    function render_deletable_option($parent, option) {
-        var $div = $(Mustache.render(Templates.deletable_poll_option, option));
-        $div.find('.remove-option').click(() => $div.remove());
-        $parent.append($div);
-    }
-
-    function render_option($parent, option) {
-        $parent.append($(Mustache.render(Templates.poll_option, option)));
-    }
-
     $.ajax('/poll/' + e.params.id, {
         success: (poll) => {
-            if (poll.user.username !== window.current_user.username) return visit('');
             $('#content').html(Mustache.render(Templates.edit_poll, poll));
             var $opts = $('#content').find('#edit-poll-options');
-
-            poll.votes.forEach((vote) => {
-                render_option($opts, vote);
-            });
 
             function add_option() {
                 var $name = $('#add-poll-option-text');
                 var name = $name.val();
                 if (name.length > 0) {
-                    render_deletable_option($opts, {name: name});
+                    var $opt = $(Mustache.render(Templates.deletable_poll_option, {name: name}));
+                    $opt.find('.remove-option').click(() => $opt.remove());
+                    $opts.append($opt);
                     $name.val('');
                 }
             }
@@ -386,15 +361,15 @@ $(document).hashroute('/edit-poll/:id', (e) => {
             });
 
             $('#save').click(() => {
-                var json = {
+                var data = {
                     name:        $('[name=name]').val(),
                     description: $('[name=description]').val(),
                     options:     $('.added-poll-option').map(function() { return {name: $(this).find('input').val()}; }).get(),
                 };
-                if (json.name.length === 0) return;
+                if (data.name.length === 0) return;
                 $.ajax('/poll/' + poll.id, {
                     method: 'PUT',
-                    data: JSON.stringify(json),
+                    data: JSON.stringify(data),
                     success: () => visit('/poll/' + poll.id),
                 });
             });

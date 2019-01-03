@@ -10,7 +10,11 @@
     </div>
     <div class='four wide column'>
       <h3>Options</h3>
-      <div id='edit-poll-options' class='ui vertical menu' style='width: 100%'></div>
+      <div id='edit-poll-options' class='ui vertical menu' style='width: 100%'>
+        {{#votes}}
+        <div class='item' style='display: flex'><span>{{ name }}</span></div>
+        {{/votes}}
+      </div>
       <div class='ui vertical menu' style='width: 100%'>
         <div id='add-poll-options' class='item' style='display: flex'>
           <input id='add-poll-option-text' class='option-text-form' name='add-poll-option' style='flex-basis: 80%;'/>
