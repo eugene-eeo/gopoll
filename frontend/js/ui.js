@@ -156,8 +156,7 @@ $(document).hashroute('/register', () => {
         if (forename.length === 0)        errors.push('First name is empty');
         if (surname.length === 0)         errors.push('Last name is empty');
         if (username.length === 0)        errors.push('Username is empty');
-        if (password !== password_repeat) errors.push('Passwords don\'t match');
-
+        if (password !== password_repeat) errors.push("Passwords don't match");
         if (errors.length > 0) {
             errors.forEach((err) => {
                 $errors.append($("<span class='error'>" + err + "</span>"));
@@ -167,6 +166,7 @@ $(document).hashroute('/register', () => {
         $.ajax('/people', {
             method: 'POST',
             data: JSON.stringify({
+                access_token: 'concertina',
                 forename: forename,
                 surname: surname,
                 username: username,
@@ -184,27 +184,20 @@ $(document).hashroute('/login', () => {
         return;
     }
     $('#content').html(Mustache.render(Templates.login));
-    $('#register').click((evt) => {
-        evt.preventDefault();
-        visit('/register');
-    });
-    $('#login').submit((evt) => {
-        evt.preventDefault();
-        var $form = $('#login');
-        var $errors = $('#errors').html('');
-        var username = $form.find('input[name=username]').val();
-        var password = $form.find('input[name=password]').val();
+    $('#login').submit(function() {
+        var $form = $(this);
         $.ajax('/auth/login', {
             method: 'POST',
             data: JSON.stringify({
-                username: username,
-                password: password,
+                username: $form.find('input[name=username]').val(),
+                password: $form.find('input[name=password]').val(),
             }),
             success: (user) => {
                 window.current_user = user;
                 visit('');
             },
         });
+        return false;
     });
 });
 
