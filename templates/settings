@@ -32,6 +32,7 @@
           </div>
         </div>
       </div>
+      <div class='ui error message'></div>
       <input class='ui button' type="submit" value="Save"/>
     </form>
   </div>

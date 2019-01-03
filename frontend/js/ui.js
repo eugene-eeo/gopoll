@@ -381,26 +381,26 @@ $(document).hashroute('/edit-poll/:id', (e) => {
 $(document).hashroute('/settings', () => {
     var reload = (user) => {
         $('#content').html(Mustache.render(Templates.settings, user));
-        $('#settings').submit((evt) => {
+        $('#settings').form({
+            fields: {
+                username: ['empty'],
+                forename: ['empty'],
+                surname:  ['empty'],
+                password: ['match[password-repeat]'],
+            },
+        });
+        $('#settings').submit(function(evt) {
             evt.preventDefault();
-            var data = {
-                username: $('[name=username]').val(),
-                forename: $('[name=forename]').val(),
-                surname: $('[name=surname]').val(),
-            };
-            var password        = $('[name=password]').val();
-            var password_repeat = $('[name=password-repeat]').val();
-            if (password) {
-                if (password !== password_repeat) {
-                    $('#errors').append($('<span class="error">Passwords do not match.</span>'));
-                    return;
-                }
-                data.password = password;
-            }
+            var $this = $(this);
+            if (!$this.form('is valid')) return;
+            var data = $this.form('get values');
+            if (data.password.length === 0) delete data['password'];
+            delete data['password-repeat'];
             $.ajax('/auth/settings', {
                 method: 'POST',
                 data: JSON.stringify(data),
                 success: (data) => {
+                    window.current_user = data;
                     data.saved = true;
                     reload(data);
                 },
