@@ -24,9 +24,8 @@ function visit(x) {
 
 
 function trim_description(poll) {
-    if (poll.description.length > 190) {
+    if (poll.description.length > 190)
         poll.description = poll.description.substr(0, 187) + '...';
-    }
 }
 
 
@@ -67,27 +66,21 @@ $.hashroute('middleware', function() {
                     polls:    {name: 'Polls'},
                     comments: {name: 'Comments'},
                 }};
-                r.results.users.results = res.users.map(user => {
-                    return {
-                        title:       user.username,
-                        description: user.forename + ' ' + user.surname,
-                        url:         '#/user/' + user.username,
-                    };
-                });
-                r.results.polls.results = res.polls.map(poll => {
-                    return {
-                        title:       poll.name,
-                        description: poll.description,
-                        url:         '#/poll/' + poll.id,
-                    };
-                });
-                r.results.comments.results = res.comments.map(comment => {
-                    return {
-                        title:       comment.poll.name,
-                        description: comment.text,
-                        url:         '#/poll/' + comment.poll.id,
-                    };
-                });
+                r.results.users.results = res.users.map(user => ({
+                    title:       user.username,
+                    description: user.forename + ' ' + user.surname,
+                    url:         '#/user/' + user.username,
+                }));
+                r.results.polls.results = res.polls.map(poll => ({
+                    title:       poll.name,
+                    description: poll.description,
+                    url:         '#/poll/' + poll.id,
+                }));
+                r.results.comments.results = res.comments.map(comment => ({
+                    title:       comment.poll.name,
+                    description: comment.text,
+                    url:         '#/poll/' + comment.poll.id,
+                }));
                 return r;
             },
         },
