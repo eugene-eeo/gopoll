@@ -62,30 +62,31 @@ $.hashroute('middleware', function() {
         apiSettings: {
             url: '/search?q={query}',
             onResponse: res => {
-                var r = {results: {}};
-                if (res.users.length > 0) r.results.users = {name: 'Users', results: []};
-                if (res.polls.length > 0) r.results.polls = {name: 'Polls', results: []};
-                if (res.comments.length > 0) r.results.comments = {name: 'Comments', results: []};
-                res.users.forEach(user => {
-                    r.results.users.results.push({
+                var r = {results: {
+                    users:    {name: 'Users'},
+                    polls:    {name: 'Polls'},
+                    comments: {name: 'Comments'},
+                }};
+                r.results.users.results = res.users.map(user => {
+                    return {
                         title:       user.username,
                         description: user.forename + ' ' + user.surname,
                         url:         '#/user/' + user.username,
-                    });
+                    };
                 });
-                res.polls.forEach(poll => {
-                    r.results.polls.results.push({
+                r.results.polls.results = res.polls.map(poll => {
+                    return {
                         title:       poll.name,
                         description: poll.description,
                         url:         '#/poll/' + poll.id,
-                    });
+                    };
                 });
-                res.comments.forEach(comment => {
-                    r.results.comments.results.push({
+                r.results.comments.results = res.comments.map(comment => {
+                    return {
                         title:       comment.poll.name,
                         description: comment.text,
                         url:         '#/poll/' + comment.poll.id,
-                    });
+                    };
                 });
                 return r;
             },
