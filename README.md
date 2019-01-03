@@ -2,8 +2,8 @@
 
 assignment for durham programming paradigms module
 
- - [ ] frontend
-   - [ ] can use ES6
+ - [x] frontend
+   - [x] can use ES6
    - [x] core functionality
    - [x] responsive
    - [x] make nice
@@ -15,5 +15,5 @@ assignment for durham programming paradigms module
    - [x] `/search`
    - [x] use token instead of login=username for cookie
  - [ ] general
-   - [ ] jest test
+   - [x] jest test
    - [ ] make video
