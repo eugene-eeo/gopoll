@@ -13,7 +13,9 @@ $.ajaxSetup({
             visit('/login');
             return;
         }
-        $('#errors').append($('<span class="error">' + r.responseJSON.error + '</span>'))
+        var $error = $(Mustache.render(Templates.error_dialog, {message: r.responseJSON.error}));
+        $error.find('.close').click(() => $error.remove());
+        $('#errors').append($error);
     }
 });
 

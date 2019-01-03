@@ -1,0 +1,5 @@
+<div class="ui negative message gopoll-error">
+  <i class="close icon"></i>
+  <div class="header">Whoops!</div>
+  <p>{{ message }}</p>
+</div>
