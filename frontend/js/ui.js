@@ -120,11 +120,9 @@ $(document).hashroute('/user/:username', (e) => {
 
 $(document).hashroute('/people', () => {
     $.ajax('/people', {
-        success: (people) => {
-            $('#content').html(Mustache.render(Templates.people, {
-                people: people,
-            }));
-        },
+        success: (people) => $('#content').html(Mustache.render(Templates.people,
+            {people: people}
+        ))
     });
 });
 
@@ -215,7 +213,7 @@ $(document).hashroute('/poll/:id', (e) => {
             data: JSON.stringify(json),
             success: (data) => {
                 render_comment($parent, data);
-                done && done();
+                done();
             },
         });
     }
@@ -240,18 +238,16 @@ $(document).hashroute('/poll/:id', (e) => {
             e.preventDefault();
             var $textbox = $('#comment-box textarea[name=text]');
             var text = $textbox.val();
-            if (text.length > 0) {
+            if (text.length > 0)
                 make_comment(
                     $('#comments'),
                     {text: text, poll_id: poll.id},
                     () => $textbox.val(''),
                 );
-            }
         });
 
         $('#content').find('.add-vote').click(function() {
-            var $this = $(this);
-            var id = $this.data('id');
+            var id = $(this).data('id');
             $.ajax('/poll/' + poll.id + '/vote/' + id, {
                 method: 'POST',
                 success: (poll) => render_poll(poll),
@@ -259,8 +255,7 @@ $(document).hashroute('/poll/:id', (e) => {
         });
 
         $('#content').find('.add-unvote').click(function() {
-            var $this = $(this);
-            var id = $this.data('id');
+            var id = $(this).data('id');
             $.ajax('/poll/' + poll.id + '/vote/' + id, {
                 method: 'DELETE',
                 success: (poll) => render_poll(poll),
@@ -268,8 +263,7 @@ $(document).hashroute('/poll/:id', (e) => {
         });
 
         $('#comments').on('click', '.comment-delete', function() {
-            var $this = $(this);
-            var $panel = $this.parent();
+            var $panel = $(this).parent();
             var id = $panel.data('comment-id');
             $.ajax('/comment/' + id, {
                 method: 'DELETE',
@@ -278,20 +272,21 @@ $(document).hashroute('/poll/:id', (e) => {
         });
 
         $('#comments').on('click', '.comment-reply', function(e) {
-            var $this = $(this);
-            var $panel = $this.parent();
+            var $panel = $(this).parent();
             var $comment = $panel.parent().parent();
             var id = $panel.data('comment-id');
 
             var $form = $(Mustache.render(Templates.comment_reply_dialog, {}));
             $form.find('.comment-reply-save').click(() => {
                 var text = $form.find('[name=comment-reply-text]').val();
-                if (text.length > 0) {
-                    make_comment($comment.children('.comments'), {text: text, reply_to: id});
-                    $form.remove();
-                }
+                if (text.length > 0)
+                    make_comment(
+                        $comment.children('.comments'),
+                        {text: text, reply_to: id},
+                        () => $form.remove()
+                    );
             });
-            $form.find('.comment-reply-cancel').click(() => $div.remove());
+            $form.find('.comment-reply-cancel').click(() => $form.remove());
             $panel.append($form);
         });
 
