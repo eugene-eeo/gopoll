@@ -33,6 +33,14 @@ Poll.prototype = {
         return json;
     },
 
+    max_id: function() {
+        var max = 0;
+        this.options.forEach(opt => {
+            max = Math.max(max, opt.id);
+        });
+        return max;
+    },
+
     finalize: function() {
         this.finalized = true;
     },
@@ -43,7 +51,7 @@ Poll.prototype = {
 
     can_vote: function(user) {
         // Multivote poll or the user has not cast a vote
-        return this.multi || !this.has_vote_by(user);
+        return !this.finalized && (this.multi || !this.has_vote_by(user));
     },
 
     has_vote_by: function(user) {

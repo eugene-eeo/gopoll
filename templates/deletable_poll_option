@@ -1,0 +1,4 @@
+<div class='item added-poll-option' style='display: flex'>
+  <input class='option-text-form' value='{{ name }}' style='flex-basis: 80%;'/>
+  <div class='ui red button remove-option' style='flex-basis: 20%;'>-</a>
+</div>

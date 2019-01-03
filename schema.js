@@ -63,9 +63,8 @@ const update_poll_schema = {
             type: 'array',
             items: {
                 type: 'object',
-                required: ['id', 'name'],
+                required: ['name'],
                 properties: {
-                    id: {type: 'integer'},
                     name: {type: 'string', minLength: 1},
                 },
             }

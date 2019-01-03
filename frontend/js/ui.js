@@ -152,10 +152,10 @@ $(document).hashroute('/register', () => {
         var password        = $form.find('[name=password]').val();
         var password_repeat = $form.find('[name=password-repeat]').val();
 
-        (forename.length === 0)        && errors.push('First name is empty');
-        (surname.length === 0)         && errors.push('Last name is empty');
-        (username.length === 0)        && errors.push('Username is empty');
-        (password !== password_repeat) && errors.push('Passwords don\'t match');
+        if (forename.length === 0)        errors.push('First name is empty');
+        if (surname.length === 0)         errors.push('Last name is empty');
+        if (username.length === 0)        errors.push('Username is empty');
+        if (password !== password_repeat) errors.push('Passwords don\'t match');
 
         if (errors.length > 0) {
             errors.forEach((err) => {
@@ -354,10 +354,14 @@ $(document).hashroute('/poll/:id', (e) => {
 $(document).hashroute('/edit-poll/:id', (e) => {
     if (!window.current_user) return visit('/login');
 
-    function render_option($parent, option) {
-        var $div = $(Mustache.render(Templates.poll_option, option));
+    function render_deletable_option($parent, option) {
+        var $div = $(Mustache.render(Templates.deletable_poll_option, option));
         $div.find('.remove-option').click(() => $div.remove());
         $parent.append($div);
+    }
+
+    function render_option($parent, option) {
+        $parent.append($(Mustache.render(Templates.poll_option, option)));
     }
 
     $.ajax('/poll/' + e.params.id, {
@@ -365,19 +369,16 @@ $(document).hashroute('/edit-poll/:id', (e) => {
             if (poll.user.username !== window.current_user.username) return visit('');
             $('#content').html(Mustache.render(Templates.edit_poll, poll));
             var $opts = $('#content').find('#edit-poll-options');
-            var id = 1;
 
             poll.votes.forEach((vote) => {
                 render_option($opts, vote);
-                id = Math.max(id, vote.id);
             });
 
             function add_option() {
                 var $name = $('#add-poll-option-text');
                 var name = $name.val();
                 if (name.length > 0) {
-                    id++;
-                    render_option($opts, {id: id, name: name});
+                    render_deletable_option($opts, {name: name});
                     $name.val('');
                 }
             }
@@ -394,16 +395,9 @@ $(document).hashroute('/edit-poll/:id', (e) => {
                 var json = {
                     name:        $('[name=name]').val(),
                     description: $('[name=description]').val(),
-                    options:     [],
+                    options:     $('.added-poll-option').map(function() { return {name: $(this).find('input').val()}; }).get(),
                 };
                 if (json.name.length === 0) return;
-                json.options = $('#edit-poll-options').children().map(function() {
-                    var $this = $(this);
-                    return {
-                        id: $this.data('id'),
-                        name: $this.find('input').val(),
-                    };
-                }).get();
                 $.ajax('/poll/' + poll.id, {
                     method: 'PUT',
                     data: JSON.stringify(json),

@@ -50,7 +50,7 @@ router.post('/',
 router.get('/:username', (req, res) => {
     const user = users[req.params.username];
     if (!user) {
-        res.status(400).end();
+        res.status(404).end();
         return;
     }
     res.json({

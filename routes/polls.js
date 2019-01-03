@@ -57,13 +57,14 @@ router.put('/:id',
         if (poll.finalized) {
             return error(res, error_codes.POLL_FINALIZED);
         }
+        const max_id = poll.max_id();
         poll.name = req.body.name;
         poll.description = req.body.description;
-        poll.options = req.body.options.map(opt => {
-            const op2 = poll.find_option(opt.id);
-            opt.users = op2 ? op2.users : [];
+        poll.options = poll.options.concat(req.body.options.map((opt, i) => {
+            opt.id = max_id + (i + 1);
+            opt.users = [];
             return opt;
-        });
+        }));
         res.json(poll.to_json_with_details(user));
     });
 
@@ -93,15 +94,10 @@ router.post('/:id/vote/:opt',
     (req, res) => {
         const user = get_user(req);
         const poll = polls[req.params.id];
-        if (poll.finalized) {
-            error(res, error_codes.POLL_FINALIZED);
-            return;
-        }
         const option = poll.find_option(+req.params.opt);
         if (!option) {
             return error(res, error_codes.OPTION_NOT_FOUND, 404);
         }
-        // non multi poll and we can find another voted option
         if (!poll.can_vote(user)) {
             return error(res, error_codes.CANNOT_VOTE, 401);
         }
