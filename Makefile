@@ -1,6 +1,6 @@
 build:
 	python tplgen.py
 
-push:
+deploy:
 	git push origin
-	git push sr.ht
+	git push heroku master
