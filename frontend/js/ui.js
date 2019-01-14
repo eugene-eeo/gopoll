@@ -370,6 +370,7 @@ $(document).hashroute('/edit-poll/:id', (e) => {
 
 $(document).hashroute('/settings', () => {
     var reload = (user) => {
+        $('#errors').html('');
         $('#content').html(Mustache.render(Templates.settings, user));
         $('#settings').form({
             fields: {
@@ -395,7 +396,7 @@ $(document).hashroute('/settings', () => {
                     reload(data);
                 },
             });
-        })
+        });
     };
     $.ajax('/auth/me', {success: reload});
 });

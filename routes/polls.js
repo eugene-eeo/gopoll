@@ -8,7 +8,7 @@ const { error_codes, error, needs_auth, get_user } = require('../utils');
 router.post('/', needs_auth,
     schema.validate({body: schema.create_poll_schema}),
     (req, res) => {
-        const id = Math.max.apply(null, Object.keys(polls).concat([1]));
+        const id = 1 + Math.max(0, ...Object.keys(polls));
         const user = get_user(req);
         const poll = new Poll({
             id,

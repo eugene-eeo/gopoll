@@ -47,6 +47,9 @@ router.post('/settings',
     schema.validate({body: schema.change_user_settings_schema}),
     (req, res) => {
         const user = get_user(req);
+        if (users[req.body.username] && users[req.body.username] !== user) {
+            return error(res, error_codes.USERNAME_TAKEN);
+        }
         delete users[user.username];
         if (req.body.username) user.username = req.body.username;
         if (req.body.password) user.password = req.body.password;
