@@ -1,6 +1,7 @@
 # gopoll
 
 assignment for durham programming paradigms module
+app: https://tranquil-temple-96711.herokuapp.com/#/
 
  - [x] frontend
    - [x] can use ES6
