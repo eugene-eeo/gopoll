@@ -8,19 +8,17 @@ const { error_codes, error, needs_auth, get_user } = require('../utils');
 router.post('/', needs_auth,
     schema.validate({body: schema.create_poll_schema}),
     (req, res) => {
+        const id = Math.max.apply(null, Object.keys(polls).concat([1]));
         const user = get_user(req);
-        const keys = Object.keys(polls);
-        const id = (keys.length > 0)  // [].reduce => typeerror
-            ? 1 + +keys.reduce((a, b) => Math.max(+a, +b))
-            : 1;
-        polls[id] = new Poll({
+        const poll = new Poll({
             id,
             user,
             name:        req.body.name,
             description: req.body.description,
             multi:       req.body.multi,
         });
-        res.json(polls[id].to_json_with_details(user));
+        polls[id] = poll;
+        res.json(poll.to_json_with_details(user));
     });
 
 
@@ -73,7 +71,8 @@ router.delete('/:id',
     needs_auth,
     check_poll_same_user,
     (req, res) => {
-        delete polls[req.params.id];
+        const poll = polls[req.params.id];
+        if (poll) poll.remove();
         res.json({});
     });
 
@@ -99,7 +98,7 @@ router.post('/:id/vote/:opt',
             return error(res, error_codes.OPTION_NOT_FOUND, 404);
         }
         if (!poll.can_vote(user)) {
-            return error(res, error_codes.CANNOT_VOTE, 401);
+            return error(res, error_codes.CANNOT_VOTE);
         }
         option.users.push(user);
         res.json(poll.to_json_with_details(user));
@@ -120,7 +119,7 @@ router.delete('/:id/vote/:opt',
         }
         const i = option.users.indexOf(user);
         if (i === -1) {
-            return error(res, error_codes.HASNT_VOTED, 404);
+            return error(res, error_codes.HASNT_VOTED);
         }
         option.users.splice(i, 1);
         res.json(poll.to_json_with_details(user));

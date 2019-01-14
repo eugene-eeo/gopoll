@@ -34,17 +34,26 @@ router.post('/',
     });
 
 
+function check_comment_same_user(req, res, next) {
+    const comment = comments[req.params.id];
+    if (!comment) {
+        error(res, error_codes.COMMENT_NOT_FOUND, 404);
+        return;
+    }
+    if (comment.user !== get_user(req)) {
+        error(res, error_codes.COMMENT_DIFFERENT_USER);
+        return;
+    }
+    next();
+}
+
+
 router.put('/:id',
     needs_auth,
+    check_comment_same_user,
     schema.validate({body: schema.update_comment_schema}),
     (req, res) => {
         const comment = comments[req.params.id];
-        if (!comment) {
-            return error(res, error_codes.COMMENT_NOT_FOUND, 404);
-        }
-        if (comment.user !== get_user(req)) {
-            return error(res, error_codes.COMMENT_DIFFERENT_USER, 403);
-        }
         comment.text = req.body.text;
         res.json(comment.to_json());
     });
@@ -52,14 +61,9 @@ router.put('/:id',
 
 router.delete('/:id',
     needs_auth,
+    check_comment_same_user,
     (req, res) => {
         const comment = comments[req.params.id];
-        if (!comment) {
-            return error(res, error_codes.COMMENT_NOT_FOUND, 404);
-        }
-        if (comment.user !== get_user(req)) {
-            return error(res, error_codes.COMMENT_DIFFERENT_USER, 403);
-        }
         comment.remove();
         res.json({});
     });

@@ -1,3 +1,6 @@
+const { polls } = require('../db');
+
+
 function Poll({id, name, description, multi, user}) {
     this.id = id;
     this.name = name;
@@ -57,6 +60,12 @@ Poll.prototype = {
 
     has_vote_by: function(user) {
         return !!this.options.find(x => x.users.indexOf(user) !== -1);
+    },
+
+    remove: function() {
+        // remember to remove comments so that future searches won't give dead links
+        delete polls[this.id];
+        this.comments.forEach(c => c.remove(true));
     },
 };
 
