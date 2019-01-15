@@ -1,11 +1,11 @@
 const { comments } = require('../db');
 
-function Comment({id, text, user, poll}) {
+function Comment({id, text, user, poll, parent}) {
     this.id = id;
     this.text = text;
     this.user = user;
     this.comments = [];
-    this.parent = null;
+    this.parent = parent;
     this.poll = poll;
 }
 

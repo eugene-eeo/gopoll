@@ -26,9 +26,9 @@ router.post('/',
             text: req.body.text,
             user: get_user(req),
             poll: reply_to.poll || reply_to,
+            parent: reply_to,
         });
         reply_to.comments.push(comment);
-        comment.parent = reply_to;
         comments[uuid] = comment;
         res.json(comment.to_json());
     });
