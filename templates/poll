@@ -58,7 +58,7 @@
         </div>
         {{/votes}}
       {{/finalized}}
-      {{^votes}}<span class='gray'>no vote options</span>{{/votes}}
+      {{^votes}}<div class='item'><p>no vote options</p></div>{{/votes}}
       </div>
     </h4>
     {{#editable}}
