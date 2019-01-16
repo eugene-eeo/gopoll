@@ -1,23 +1,11 @@
-function ngrams(s) {
-    s = '$' + s.toLowerCase() + '$';
-    const rv = [];
-    for (let i = 1; i < s.length; i++) {
-        rv.push(s[i-1] + '' + s[i]);
-    }
-    return rv;
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 
-function jaccard(a, b) {
-    const m = {};
-    a.forEach(x => { m[x] = 0; });
-    b.forEach(x => {
-        if (x in m) {
-            m[x]++;
-        }
-    });
-    const s = Object.values(m).reduce((a, b) => a + b);
-    return s / (a.length + b.length - s);
+function queryToRegexp(q) {
+    const parts = q.split(/\s+/);
+    return new RegExp(parts.map(escapeRegExp).join('[\\w\\s]+'), 'i');
 }
 
 
@@ -30,14 +18,14 @@ function get(obj, selector) {
 
 
 function search(haystack, attrs, query) {
-    const a = ngrams(query);
+    const q = queryToRegexp(query);
     const h = [];
     haystack.forEach(x => {
         let score = 0;
         attrs.forEach((attr) => {
-            score += jaccard(a, ngrams(get(x, attr)));
+            score += q.test(get(x, attr)) ? 1 : 0;
         });
-        if (score > 0.25) {
+        if (score > 0) {
             h.push([score, x]);
         }
     });
