@@ -19,22 +19,17 @@ function get(obj, selector) {
 
 function search(haystack, attrs, query) {
     const q = queryToRegexp(query);
-    const h = [];
-    haystack.forEach(x => {
-        let score = 0;
-        attrs.forEach((attr) => {
-            score += q.test(get(x, attr)) ? 1 : 0;
-        });
-        if (score > 0) {
-            h.push([score, x]);
-        }
-    });
-    h.sort((a, b) =>
-        a[0] > b[0] ? -1
+    const getScore = (x) => attrs.reduce((acc, attr) => acc + q.test(get(x, attr)), 0);
+    const desc = (a, b) => (
+          a[0] > b[0] ? -1
         : a[0] < b[0] ? 1
-        : 0
-    );
-    return h.splice(0, 10).map(([_, x]) => x);
+        : 0);
+    return haystack
+      .map(x => [getScore(x), x])
+      .filter(([score, _]) => score > 0)
+      .sort(desc)
+      .splice(0, 10)
+      .map(([_, x]) => x);
 }
 
 
