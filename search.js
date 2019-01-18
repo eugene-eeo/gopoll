@@ -10,10 +10,7 @@ function queryToRegexp(q) {
 
 
 function get(obj, selector) {
-    selector.split('.').forEach(a => {
-        obj = obj[a];
-    })
-    return obj;
+    return selector.split('.').reduce((obj, a) => obj[a], obj);
 }
 
 
