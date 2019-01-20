@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cookieParser('secret'));
 
 // routes
-app.get('/ping', (req, res) => res.write('pong'));
+app.get('/ping', (req, res) => res.json(['pong']));
 app.use('/people',  require('./routes/people'));
 app.use('/auth',    require('./routes/auth'));
 app.use('/poll',    require('./routes/polls'));
