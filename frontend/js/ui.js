@@ -195,6 +195,10 @@ $(document).hashroute('/logout', () => {
 
 
 $(document).hashroute('/', () => {
+    if (!window.current_user) {
+        visit('/login');
+        return;
+    }
     $.ajax('/auth/me', {
         success: (data) => {
             window.current_user = data;
