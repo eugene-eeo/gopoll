@@ -18,7 +18,7 @@ Poll.prototype = {
             id:          this.id,
             name:        this.name,
             description: this.description,
-            user:        this.user,
+            user:        this.user.to_json(),
             multi:       this.multi,
             finalized:   this.finalized,
         };
