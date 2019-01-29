@@ -17,6 +17,7 @@ router.post('/login', schema.validate({body: schema.login_schema}), (req, res) =
         return error(res, error_codes.ALREADY_LOGGED_IN);
     }
 
+    req.body.username = req.body.username.toLowerCase();
     const { username, password } = req.body;
     const user = users[username];
 
@@ -46,6 +47,7 @@ router.post('/settings',
     needs_auth,
     schema.validate({body: schema.change_user_settings_schema}),
     (req, res) => {
+        req.body.username = req.body.username.toLowerCase();
         const user = get_user(req);
         if (users[req.body.username] && users[req.body.username] !== user) {
             return error(res, error_codes.USERNAME_TAKEN);

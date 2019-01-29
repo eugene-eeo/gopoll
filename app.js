@@ -31,4 +31,16 @@ app.use(function(err, req, res, next) {
     }
 });
 
+
+const db = require('./db');
+const Poll = require('./models/poll');
+
+db.polls[1] = new Poll({
+    id: 1,
+    name: "Login Information",
+    description: "Password for @eeojun is \"abc\", and @doctorwhocomposer is \"doctor\".",
+    multi: false,
+    user: db.users['eeojun'],
+});
+
 module.exports = app;

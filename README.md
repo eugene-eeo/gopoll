@@ -8,3 +8,8 @@ the code in this repository). Run locally:
 
     $ npm install
     $ npm start
+
+Passwords:
+
+ - @doctorwhocomposer: "doctor"
+ - @eeojun: "abc"
